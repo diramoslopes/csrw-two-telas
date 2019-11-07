@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:p="http://primefaces.org/ui">
+
+	<h:head>
+	 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		
+		<link rel="StyleSheet" type="text/css" href="css/estilos.css"
+			  media="screen" />
+		
+		<title>Login</title>
+		
+	</h:head>
+	
+	<h:body>
+	
+		<f:view contentType="text/html">
+			
+			<div class="container">
+				<div class="form-box">
+					<h:form id="frmLoginMain" method="post">
+						
+						<h:graphicImage styleClass="logo" value="#{resource['images:logo_faesp.PNG']}" />
+						
+						<h1>Login</h1>	
+						
+						<h:inputText styleClass="form-input">
+							<f:passThroughAttribute name="placeholder" value="Seu login de usuário"/>
+						</h:inputText>
+						
+						<h:inputSecret styleClass="form-input">
+							<f:passThroughAttribute name="placeholder" value="Digite sua senha" />
+						</h:inputSecret>
+						
+						<h:commandButton name="entrar" value="Entrar" title="Entrar"
+							type="submit" styleClass="form-btn" />
+						
+					</h:form>
+				</div>
+			</div>
+			
+		</f:view>
+	
+	</h:body>
+	
+</html>

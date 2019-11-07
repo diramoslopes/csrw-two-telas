@@ -1,0 +1,59 @@
+@media screen and (max-width:425px){
+    .form-box {
+        width: 100vw;
+        height: 100vh;
+        border-top: 10px solid #5CB85C;
+        border-bottom: 10px solid #5CB85C;
+    }
+}
+
+body{
+    padding: 0;
+    margin: 0;
+    font-family: Arial;
+}
+
+.container {
+    width: 100vw;
+    height: 100vh;
+    background: #6C7A89;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-box{
+    border-radius: 5px;
+    width: 300px;
+    background: #fff;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.form-box .form-input{
+	border: none;
+    background: rgb(239, 239, 240);
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    font-size: large;
+    margin-bottom: 10px
+	
+}
+
+.form-box .form-btn{
+	border: none;
+    background: #5CB85C;
+    width: 100%;
+    height: 50px;
+    font-size: large;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.logo {
+    width: 150px;
+    height: 150px;
+}
