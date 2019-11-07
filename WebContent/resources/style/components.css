@@ -1,0 +1,53 @@
+/* toggle menu (alternancia) */
+.toggle-menu{
+	float: left;
+	line-height: 50px;
+	margin-left: 15px;
+	color: #fff;
+}
+
+/* menu */
+.menu{
+	font-size: 1.1em;
+}
+
+.menu > ul{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.menu > ul a{
+	display: block;
+	padding: 10px 15px;
+	
+	text-decoration: none;
+	font-weight: 500;
+	color: #373737;
+}
+
+.menu > ul i{
+	margin-right: 6px;
+}
+
+.menu > ul a:hover, .menu > ul a:focus{
+	background-color: #dfdfdf;
+}
+
+.menu > ul .is-selected{
+	border-left: 3px solid #1e94d2; /* desloca 3 pixels da posição original */
+	background-color: #f3f3f3;
+}
+
+.menu > ul .is-selected a{
+	margin-left: -3px; /* volta 3 pixels pra posição correta*/
+	color: #1e94d2;
+}
+
+
+/*Titulo da pagina */
+.tituloDaPagina{
+	margin: 0;
+	padding: 20px 0;
+	font-size: 1.5em;
+}

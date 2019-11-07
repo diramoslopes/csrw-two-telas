@@ -1,0 +1,633 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<h:head>
+		<title>C.S.R.W. - Contribuição Sindical Rural na WEB</title>
+		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
+
+		<meta http-equiv="Accept-Encoding"  content="gzip, deflate" />
+		<meta http-equiv="Content-Language" content="pt-br" />
+
+		<h:outputScript name="jquery-1.7.2.min.js" library="js" target="head"/>
+		<h:outputScript name="jquery.maskMoney.js" library="js" target="head"/>
+		<h:outputScript name="utilitarios.js"      library="js" target="head"/>
+
+		<script type="text/javascript">
+         PrimeFaces.locales['pt'] = {
+                closeText: 'Fechar',
+                prevText: 'Anterior',
+                nextText: 'Próximo',
+                currentText: 'Começo',
+                monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+                monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun', 'Jul','Ago','Set','Out','Nov','Dez'],
+                dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+                dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'],
+                dayNamesMin: ['D','S','T','Q','Q','S','S'],
+                weekHeader: 'Semana',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: '',
+                timeOnlyTitle: 'Só Horas',
+                timeText: 'Tempo',
+                hourText: 'Hora',
+                minuteText: 'Minuto',
+                secondText: 'Segundo',
+                currentText: 'Data Atual',
+                ampm: false,
+                month: 'Mês',
+                week: 'Semana',
+                day: 'Dia',
+                allDayText : 'Todo Dia'
+            };
+		</script>
+
+	</h:head>
+	<h:body style="background-color:#63A4FF;">
+	   <f:view contentType="text/html; charset=ISO-8859-1">
+	   <p:layout fullPage="true"  >
+	      <p:layoutUnit id="loutCabecalho" position="north" size="110" resizable="false" closable="false" collapsible="false" style="opacity:0.7" >
+				<div id="idCabecalho">
+				   <div id="idLogoFAESP" style="position:absolute; top:0; left:0;">
+				      <h:graphicImage value="/Restritas/Temas/imgs/logoFAESP_100x100.jpg" id="idImgLogoFAESP"/>
+				   </div>
+               <div id="idTituloFAESP" style="position:absolute; top:10px; left:0px; width:auto; margin-left: 110px; color:green; text-align:center;">
+                  <h:panelGrid style="color:green; text-align:center;">
+	                  <h:outputLabel value="FEDERAÇÃO DA AGRICULTURA E PECUÁRIA DO ESTADO DE SÃO PAULO" style="font-size:26px;" />
+	                  <h:outputLabel value="Contribuição Sindical Rural" style="font-size:14px;  font-weight:bold" />
+	                  <h:outputLabel value="(Módulo: #{loginMBean.agenteUsuarioLogin.grupoDeTrabalho.nomeDoGrupo})" style="font-size:12px;  font-weight:bold" />
+                  </h:panelGrid>
+               </div>
+				   <div id="idLoginData" style="position:absolute; top:85px; right:0; color: blue; margin-rigth: 10px">
+	              <div id="idNomeUsuario" style="top:0; left:0; width:auto; font-size:14px; text-align: center; font-weight:bold;">
+                    <h:form id="cabecalhoForm">
+                       <h:outputLabel value="Usuário: #{loginMBean.agenteUsuario.nome}   " title="Escritório: #{loginMBean.agenteUsuario.agente.nome}" />
+                       <p:commandLink value="Sair" action="#{loginMBean.logoutUsuario()}" style="color: red;"/>
+                    </h:form>
+	              </div>
+				   </div>
+				</div>
+	      </p:layoutUnit>
+
+	      <p:layoutUnit id="loutCentro" position="center" style="opacity:1">
+
+	         <h:form id="frmSchedule" style="font-size:14px; font-family:Verdana" rendered="true">
+
+	            <p:panel id="pnlBoletos" rendered="#{!(boletoCobrancaAdministrativaMBean.isApresentaPainelBoletosDoLote())}" style="border: none">
+
+                  <p:fieldset legend="Boletos atendidos e não pagos"
+                              toggleable="true"
+                              toggleSpeed="100"
+                              style="font-size:12px; font-family:Verdana">
+                     <h:panelGrid columns="2" cellpadding="5" style="font-size:12px;font-family:Verdana">
+	                     <h:outputText value="Total de #{boletoCobrancaAdministrativaMBean.boletosNaoQuitados} boleto(s) VENCIDO(S) E NÃO QUITADO(S)" style="color:red"></h:outputText>
+                        <h:commandButton id="btnVencidos"
+                                       action="#{boletoCobrancaAdministrativaMBean.listarBoletosNaoQuitados()}"
+	                                   value="Exibir boletos"
+	                                   disabled="#{!(boletoCobrancaAdministrativaMBean.boletosNaoQuitados > 0)}" style="font-size:12px;font-family:Verdana">
+	                     </h:commandButton>
+	                     <h:outputText value="Total de #{boletoCobrancaAdministrativaMBean.painelBoletosAlendidosNaoPagos.boletosVencidos} boleto(s) que vence(m) HOJE"></h:outputText>
+                        <h:commandButton id="btnAtendidosUmMes"
+                                      action="#{boletoCobrancaAdministrativaMBean.listarBoletosVencendoHojeOuJaVencidos()}"
+	                                   value="Exibir boletos"
+	                                   disabled="#{!(boletoCobrancaAdministrativaMBean.painelBoletosAlendidosNaoPagos.boletosVencidos > 0)}" style="font-size:12px;font-family:Verdana">
+	                     </h:commandButton>
+	                     <h:outputText value="Total de #{boletoCobrancaAdministrativaMBean.painelBoletosAlendidosNaoPagos.boletosVencendo1Dias} boleto(s) que vence(m) AMANHÃ"></h:outputText>
+                        <h:commandButton id="btnAtendidosQuinzeDias"
+                                      action="#{boletoCobrancaAdministrativaMBean.listarBoletosVencendoUmDia()}"
+	                                   value="Exibir boletos"
+	                                   disabled="#{!(boletoCobrancaAdministrativaMBean.painelBoletosAlendidosNaoPagos.boletosVencendo1Dias > 0)}" style="font-size:12px;font-family:Verdana">
+	                     </h:commandButton>
+	                     <h:outputText value="Total de #{boletoCobrancaAdministrativaMBean.painelBoletosAlendidosNaoPagos.boletosVencendo5Dias} boleto(s) que vence(m) daqui a CINCO dias ou menos"></h:outputText>
+                        <h:commandButton id="btnAtendidosUmaSemana"
+                                      action="#{boletoCobrancaAdministrativaMBean.listarBoletosVencendoCincoDias()}"
+	                                   value="Exibir boletos"
+	                                   disabled="#{!(boletoCobrancaAdministrativaMBean.painelBoletosAlendidosNaoPagos.boletosVencendo5Dias > 0)}" style="font-size:12px;font-family:Verdana">
+	                     </h:commandButton>
+	                     
+	                    <h:outputText value="Total de #{boletoCobrancaAdministrativaMBean.countBoletosCriticados} boleto(s) criticado(s)"></h:outputText>
+                        <h:commandButton id="btnCriticados"
+                                      action="#{boletoCobrancaAdministrativaMBean.listarBoletosCriticados()}"
+	                                   value="Exibir boletos"
+	                                   disabled="#{!(boletoCobrancaAdministrativaMBean.countBoletosCriticados > 0)}" style="font-size:12px;font-family:Verdana">
+	                     </h:commandButton>
+                     </h:panelGrid>
+                  </p:fieldset>
+
+                  <p:spacer height="25" />
+
+                  <p:fieldset legend="Notificações de atendimento"
+                              toggleable="true"
+                              toggleSpeed="100"
+                              style="font-size:12px; font-family:Verdana">
+                     <p:spacer height="25" />
+                     <p:schedule id="scheduleId" widgetVar="scheduleVar" value="#{boletoCobrancaAdministrativaMBean.scheduleVencimentosModel}" locale="pt" ignoreTimezone="false" timeZone="UTF" style="width:100%;height:100%;font-family:Verdana;font-size:14px;">
+                        <p:ajax event="eventSelect" listener="#{boletoCobrancaAdministrativaMBean.selecionaEventoSchedule}" update="frmSchedule" pattern="dd/MM/yyyy"/>
+                     </p:schedule>
+                  </p:fieldset>
+
+	            </p:panel>
+
+	            <p:panel id="listaBoletos" header="#{boletoCobrancaAdministrativaMBean.titlePanel}"
+                        toggleable="true"
+                        rendered="#{boletoCobrancaAdministrativaMBean.isApresentaPainelBoletosDoLote()}" style="font-size:14px; font-family:Verdana" >
+
+                  <p:fieldset toggleable="true" toggleSpeed="100" rendered="#{!boletoCobrancaAdministrativaMBean.apresentaBoletosCriticados}">
+                     <h:panelGrid columns="2" cellpadding="5" style="font-size:12px; font-family:Verdana">
+	                     <h:outputText value="Gerar arquivo para impressão contendo todos boletos atendidos"></h:outputText>
+
+                        <h:commandLink id="pdf3" action="#{boletoCobrancaAdministrativaMBean.imprimirTodosBoletosAtendidos()}" target="_blank" disabled="#{!boletoCobrancaAdministrativaMBean.impressaoBoletosAtendidos}">
+                           <p:graphicImage value="/resources/images/savepdf.png" title="Imprimir boletos atendidos"/>
+                        </h:commandLink>
+                     </h:panelGrid>
+                  </p:fieldset>
+
+                  <p:spacer height="15" rendered="#{!boletoCobrancaAdministrativaMBean.apresentaBoletosCriticados}"/>
+
+                  <p:dataTable id="tableBoleto" widgetVar="tableBoletoVar" var="boletoCobrancaAdministrativa" value="#{boletoCobrancaAdministrativaMBean.boletoCobrancaAdministrativaList}" scrollable="true" scrollHeight="500" style="width:auto; font-size:12px;font-family:Verdana" resizableColumns="true">
+                     <f:facet name="header">
+                        Boleto(s)
+                     </f:facet>
+                      <p:column width="175" style="text-align:center;font-size:12px;font-family:Verdana" sortBy="#{boletoCobrancaAdministrativa.statusDaCobranca.label}" filterBy="#{boletoCobrancaAdministrativa.statusDaCobranca.label}">
+                        <f:facet name="header">
+                            <h:outputText value="Status de cobrança" />
+                        </f:facet>
+                        <h:outputText value="#{boletoCobrancaAdministrativa.statusDaCobranca.label}" style="color:blue;" rendered="#{boletoCobrancaAdministrativa.statusDaCobranca.ordinal()!=8}"/>
+                        <h:outputText value="#{boletoCobrancaAdministrativa.statusDaCobranca.label}" style="color:red;" rendered="#{boletoCobrancaAdministrativa.statusDaCobranca.ordinal()==8}"/>
+                     </p:column>
+
+                     <p:column width="125" style="text-align:center;font-size:12px;font-family:Verdana" id="colunaProtocolo" headerText="Protocolo" sortBy="#{boletoCobrancaAdministrativa.protocolo.numeroDoProtocolo}" filterBy="#{boletoCobrancaAdministrativa.protocolo.numeroDoProtocolo}" rendered="#{!boletoCobrancaAdministrativaMBean.apresentaBoletosCriticados}">
+                        <h:outputText value="#{boletoCobrancaAdministrativa.protocolo.numeroDoProtocolo}" />
+                     </p:column>
+
+                      <p:column width="120" style="text-align:center;font-size:12px;font-family:Verdana" sortBy="#{boletoCobrancaAdministrativa.exercicio}" filterBy="#{boletoCobrancaAdministrativa.exercicio}">
+                        <f:facet name="header">
+                           <h:outputText value="Exercício" />
+                        </f:facet>
+                        <h:outputText value="#{boletoCobrancaAdministrativa.exercicio}" />
+                     </p:column>
+                     
+                     <p:column width="500" style="text-align:center;font-size:12px;font-family:Verdana" sortBy="#{boletoCobrancaAdministrativa.contribuinte.razaoSocial}" filterBy="#{boletoCobrancaAdministrativa.contribuinte.razaoSocial}">
+                        <f:facet name="header">
+                           <h:outputText value="Razão social" />
+                        </f:facet>
+                        <h:outputText value="#{boletoCobrancaAdministrativa.contribuinte.razaoSocial}" />
+                     </p:column>
+                     
+                     <p:column width="150" style="text-align:center;font-size:12px;font-family:Verdana" sortBy="#{boletoCobrancaAdministrativa.contribuinte.numeroDoDocumentoFormatado}" filterBy="#{boletoCobrancaAdministrativa.contribuinte.numeroDoDocumentoFormatado}">
+                        <f:facet name="header">
+                           <h:outputText value="CPF/CNPJ" />
+                        </f:facet>
+                        <h:outputText value="#{boletoCobrancaAdministrativa.contribuinte.numeroDoDocumentoFormatado}" />
+                     </p:column>
+                     
+                     <p:column width="150" style="text-align:center;font-size:12px;font-family:Verdana" sortBy="#{boletoCobrancaAdministrativa.nossoNumeroAtual}" filterBy="#{boletoCobrancaAdministrativa.nossoNumeroAtual}" rendered="false">
+                        <f:facet name="header">
+                           <h:outputText value="Nosso número" />
+                        </f:facet>
+                        <h:outputText value="#{boletoCobrancaAdministrativa.nossoNumeroAtual}"/>
+                     </p:column>
+
+                     <p:column width="150" style="text-align:center;font-size:12px;font-family:Verdana" sortBy="#{boletoCobrancaAdministrativa.nossoNumeroAtual}">
+                        <f:facet name="header">
+                           <h:outputText value="Valor principal" />
+                        </f:facet>
+                        <h:outputText value="#{boletoCobrancaAdministrativa.valorPrincipalDoBoleto}" >
+                           <f:convertNumber currencySymbol="R$" pattern="R$ #,##0.00" type="currency"/>
+                        </h:outputText>
+                     </p:column>
+                     
+                     <p:column width="180" style="text-align:center;font-size:12px;font-family:Verdana" sortBy="#{boletoCobrancaAdministrativa.valorEstimado600CLT}">
+                        <f:facet name="header">
+                           <h:outputText value="Valor artigo 600 da CLT" />
+                        </f:facet>
+                        <h:outputText value="#{boletoCobrancaAdministrativa.valorEstimado600CLT}" rendered="#{!boletoCobrancaAdministrativa.verificaExercicio()}">
+                           <f:convertNumber currencySymbol="R$" pattern="R$ #,##0.00" type="currency"/>
+                        </h:outputText>
+                        <h:outputText value="-" rendered="#{boletoCobrancaAdministrativa.verificaExercicio()}"/>
+                     </p:column>
+                     
+                     <p:column width="150" style="text-align:center;font-size:12px;font-family:Verdana" sortBy="#{boletoCobrancaAdministrativa.valorEstimado8022}">
+                        <f:facet name="header">
+                           <h:outputText value="Valor Lei 8022/1990" />
+                        </f:facet>
+                        <h:outputText value="#{boletoCobrancaAdministrativa.valorEstimado8022}" rendered="#{!boletoCobrancaAdministrativa.verificaExercicio()}">
+                           <f:convertNumber currencySymbol="R$" pattern="R$ #,##0.00" type="currency"/>
+                        </h:outputText>
+                        <h:outputText value="-" rendered="#{boletoCobrancaAdministrativa.verificaExercicio()}"/>
+                     </p:column>
+
+                     <p:column width="90" style="text-align:center;font-size:12px;font-family:Verdana" sortBy="#{boletoCobrancaAdministrativa.nossoNumeroAtual}" rendered="false">
+	                     <f:facet name="header">
+	                        <h:outputText value="Multa" />
+	                     </f:facet>
+	                     <h:outputText value="#{boletoCobrancaAdministrativa.valorDaMulta}">
+	                        <f:convertNumber currencySymbol="R$" pattern="R$ #,##0.00" type="currency"/>
+	                     </h:outputText>
+                     </p:column>
+
+                     <p:column width="90" style="text-align:center;font-size:12px;font-family:Verdana" sortBy="#{boletoCobrancaAdministrativa.nossoNumeroAtual}" rendered="false">
+	                     <f:facet name="header">
+	                        <h:outputText value="Juros" />
+	                     </f:facet>
+	                     <h:outputText value="#{boletoCobrancaAdministrativa.valorDosJuros}">
+	                        <f:convertNumber currencySymbol="R$" pattern="R$ #,##0.00" type="currency"/>
+	                     </h:outputText>
+                     </p:column>
+
+                     <p:column width="110" style="text-align:center;font-size:12px;font-family:Verdana" sortBy="#{boletoCobrancaAdministrativa.nossoNumeroAtual}" rendered="false">
+	                     <f:facet name="header">
+	                        <h:outputText value="Atualiz. monet." />
+	                     </f:facet>
+	                     <h:outputText value="#{boletoCobrancaAdministrativa.valorDaAtualizacaoMonetaria}">
+	                        <f:convertNumber currencySymbol="R$" pattern="R$ #,##0.00" type="currency"/>
+	                     </h:outputText>
+                     </p:column>
+
+                     <p:column width="110" style="text-align:center;font-size:12px;font-family:Verdana" sortBy="#{boletoCobrancaAdministrativa.nossoNumeroAtual}" rendered="false">
+	                     <f:facet name="header">
+	                        <h:outputText value="Valor Calculado" />
+	                     </f:facet>
+	                     <h:outputText value="#{boletoCobrancaAdministrativa.valorCalculadoDoBoleto}">
+	                        <f:convertNumber currencySymbol="R$" pattern="R$ #,##0.00" type="currency"/>
+	                     </h:outputText>
+                     </p:column>
+
+	                  <p:column width="150" style="text-align:center;font-size:12px;font-family:Verdana" sortBy="#{boletoCobrancaAdministrativa.dataPagamentoCR}" rendered="#{!boletoCobrancaAdministrativaMBean.apresentaBoletosCriticados}">
+                       	<f:facet name="header">
+                           <h:outputText value="Data do pagamento" />
+                        </f:facet>
+                       	<h:outputText value="#{boletoCobrancaAdministrativa.dataPagamentoCRFormatada}" />
+	                  </p:column>
+
+                     <p:column width="150" style="text-align:center;font-size:12px;font-family:Verdana" sortBy="#{boletoCobrancaAdministrativa.valorPagamentoCR}" rendered="#{!boletoCobrancaAdministrativaMBean.apresentaBoletosCriticados}">
+                       	<f:facet name="header">
+                           <h:outputText value="Valor do pagamento" />
+                        </f:facet>
+                       	<h:outputText value="#{boletoCobrancaAdministrativa.valorPagamentoCR}" >
+                       	   <f:convertNumber currencySymbol="R$" pattern="R$ #,##0.00" type="currency"/>
+                       	</h:outputText>
+	                  </p:column>
+	                  
+	                  <p:column width="150" style="text-align:center;font-size:12px;font-family:Verdana" sortBy="#{boletoCobrancaAdministrativa.formaDeCalculoUtilizada.label}" rendered="#{!boletoCobrancaAdministrativaMBean.apresentaBoletosCriticados}">
+                       	<f:facet name="header">
+                           <h:outputText value="Forma de cálculo" />
+                        </f:facet>
+                       	<h:outputText value="#{boletoCobrancaAdministrativa.formaDeCalculoUtilizada.label}" />
+	                  </p:column>
+
+	                  <p:column width="200" style="text-align:center;font-size:12px;font-family:Verdana" sortBy="#{boletoCobrancaAdministrativa.cpfcnpjFontePagtoCR}" rendered="#{!boletoCobrancaAdministrativaMBean.apresentaBoletosCriticados}">
+                       	<f:facet name="header">
+                           <h:outputText value="CPF/CNPJ fonte pagadora" />
+                        </f:facet>
+                       	<h:outputText value="60.595.451/0001-40" />
+	                  </p:column>
+
+                     <p:column width="110" style="text-align:center;font-size:12px;font-family:Verdana" rendered="#{!boletoCobrancaAdministrativaMBean.apresentaBoletosCriticados}">
+                        <f:facet name="header">
+	                        <h:outputText value="Imprimir boleto" />
+	                     </f:facet>
+                        <h:commandLink id="pdf2" disabled="#{!(boletoCobrancaAdministrativa.isTemDocumentoAnexado()) || (boletoCobrancaAdministrativa.isBloqueadoParaImpressao())}" action="#{boletoCobrancaAdministrativaMBean.exibirBoletoEmAnexo()}" target="_blank" rendered="#{(boletoCobrancaAdministrativa.valorPagoNaCNA == 0.0) ? 'true' : 'false' }">
+                           <p:graphicImage value="#{(boletoCobrancaAdministrativa.isTemDocumentoAnexado()) ? '/resources/images/icone_pdf.png' : '/resources/images/icone2_pdf.png'}" rendered="#{!(boletoCobrancaAdministrativa.isBloqueadoParaImpressao())}" title="#{(boletoCobrancaAdministrativa.isTemDocumentoAnexado()) ? 'Imprimir boleto' : 'Boleto não importado'}"/>
+                           <p:graphicImage value="/resources/images/icon-cadeado.png" rendered="#{(boletoCobrancaAdministrativa.isBloqueadoParaImpressao())}" title="Boleto bloqueado"/>
+                           <f:setPropertyActionListener value="#{boletoCobrancaAdministrativa}" target="#{boletoCobrancaAdministrativaMBean.boletoCobrancaAdministrativa}" />
+                        </h:commandLink>
+                        <p:graphicImage value="/resources/images/maos.png" rendered="#{(boletoCobrancaAdministrativa.valorPagoNaCNA > 0.0) ? 'true' : 'false' }" title="Boleto pago"/>
+                     </p:column>
+
+                     <p:column width="140" style="text-align:center;font-size:12px;font-family:Verdana" rendered="#{!boletoCobrancaAdministrativaMBean.apresentaBoletosCriticados}">
+                        <f:facet name="header">
+	                        <h:outputText value="Opções" />
+	                     </f:facet>
+
+		          	      <p:commandButton id="btnLoteBoleto1"
+	                     				  action="#{controleLoteCobrancaAdminMBean.listarLotePorBoleto()}"
+	                     				  title="Lote do boleto"
+	                                   style="width:50px;height:25px;font-size:12px;"
+	                                   icon="ui-icon-cart"
+	                                   disabled="#{!(boletoCobrancaAdministrativa.statusDaCobranca.ordinal() >= 5)}"
+	                                   rendered="false">
+                           <f:setPropertyActionListener value="#{boletoCobrancaAdministrativa}" target="#{controleLoteCobrancaAdminMBean.boletoCobrancaAdministrativa}" />
+	                     </p:commandButton>
+
+                        <p:commandButton id="btnHistoricoMovimentacaoBoleto1"
+												  action="#{controleLoteCobrancaAdminMBean.listarHistoricoMovimentacaoBoleto()}"
+												  oncomplete="historicoMovimentacaoBoletoDlg.show()"
+	                                   title="Exibir histórico de movimentação do boleto"
+	                                   update=":historicoMovimentacaoBoletoForm"
+	                                   style="width:50px;height:25px;font-size:12px;"
+	                                   icon="ui-icon-clipboard">
+                           <f:setPropertyActionListener value="#{boletoCobrancaAdministrativa}" target="#{controleLoteCobrancaAdminMBean.boletoCobrancaAdministrativa}" />
+	                     </p:commandButton>
+
+                     </p:column>
+                     
+                     <p:column width="265" style="text-align:center;font-size:12px;font-family:Verdana" rendered="#{boletoCobrancaAdministrativaMBean.apresentaBoletosCriticados }">
+                        <f:facet name="header">
+	                        <h:outputText value="Opções" />
+	                     </f:facet>
+
+                        <p:commandButton id="solicitacaoBtn"
+                                       oncomplete="solicitarBoletoDlg.show()"
+                                       update=":solicitarBoletoForm:solicitarBoletoPanel"
+                                       title="#{(boletoCobrancaAdministrativa.statusDaCobranca eq 'BOLETO_SELECIONADO') ? 'Atualizar dados do boleto selecionado' : 'Selecionar boleto para geração de lote'}"
+                                       disabled="#{((boletoCobrancaAdministrativa.statusDaCobranca eq 'AGUARDANDO_POSICIONAMENTO' or boletoCobrancaAdministrativa.statusDaCobranca eq 'BOLETO_SELECIONADO' or boletoCobrancaAdministrativa.statusDaCobranca eq 'BOLETO_CRITICADO' or boletoCobrancaAdministrativa.statusDaCobranca eq 'BOLETO_NAO_QUITADO') and boletoCobrancaAdministrativa.valorPagoNaCNA == 0.0) ? 'false' : 'true'}"
+									   rendered="#{boletoCobrancaAdministrativa.isExisteAcaoAcordo()}" 
+                                       icon="#{(boletoCobrancaAdministrativa.statusDaCobranca eq 'BOLETO_SELECIONADO') ? 'ui-icon-gear' : 'ui-icon-circle-check'}"
+                                       style="width:75px;height:25px;font-size:12px;">
+		                     <f:setPropertyActionListener value="#{boletoCobrancaAdministrativa}" target="#{boletoCobrancaAdministrativaMBean.boletoCobrancaAdministrativa}" />
+		          	      </p:commandButton>
+
+		          	      <p:spacer height="10" />
+
+                        <p:commandButton id="btnHistoricoMovimentacaoBoleto2"
+												  action="#{controleLoteCobrancaAdminMBean.listarHistoricoMovimentacaoBoleto()}"
+												  oncomplete="historicoMovimentacaoBoletoDlg.show()"
+	                                   title="Exibir histórico de movimentação do boleto"
+	                                   update=":historicoMovimentacaoBoletoForm"
+	                                   style="width:50px;height:25px;font-size:12px;"
+	                                   icon="ui-icon-clipboard"
+	                                   rendered="#{(boletoCobrancaAdministrativa.isExisteAcaoAcordo())}">
+                           <f:setPropertyActionListener value="#{boletoCobrancaAdministrativa}" target="#{controleLoteCobrancaAdminMBean.boletoCobrancaAdministrativa}" />
+	                     </p:commandButton>
+
+                     </p:column>
+
+                  </p:dataTable>
+
+                  <f:facet name="footer" >
+		  				      <p:commandButton action="#{boletoCobrancaAdministrativaMBean.voltarPainelAtendimentos()}"
+		  				                       update=":frmSchedule"
+		  				                       value="Voltar"
+		  				                       title="Volta ao detalhamento dos lotes"
+		  				                       style="font-size:12px;width:125px;font-family:Verdana"/>
+	               </f:facet>
+
+               </p:panel>
+
+	         </h:form>
+
+		         <p:dialog id="confirmarImpressaoLoteId" header="Confirmação de impressão" widgetVar="confirmarImpressaoLoteDlg" resizable="false" modal="false" width="550" height="110" position="center" style="font-size:14px; font-family:Verdana">
+			  		   <h:form id="confirmarImpressaoLoteForm">
+			  		      <p:panel id="confirmarImpressaoLotePanel">
+				  	         <h:panelGrid id="confirmarImpressaoLoteGrid" cellpadding="4" columns="1"  style="font-size:12px; font-family:Verdana">
+				  	            <h:outputText value="Confirma a impressão de todos boletos?" />
+				  	            <p:spacer height="5"></p:spacer>
+				  	            <f:facet name="footer">
+			                     <p:commandButton id="confirm" value="Sim" oncomplete="confirmarImpressaoLoteDlg.hide()" update=":frmSchedule:listaBoletos" action="#{boletoCobrancaAdministrativaMBean.imprimirTodosBoletosAtendidos()}" style="width:150px; height:30px; left:5%"/>
+				  	               <p:commandButton id="decline" value="Não" onclick="confirmarImpressaoLoteDlg.hide()" type="button" style="width:150px; height:30px; left:40%;"/>
+			                  </f:facet>
+				  		      </h:panelGrid>
+				  		   </p:panel>
+			  		   </h:form>
+			      </p:dialog>
+
+  <p:dialog id="solicitarBoletoId"
+                      header="Solicitação de boleto"
+                      widgetVar="solicitarBoletoDlg"
+                      resizable="false"
+                      showEffect="fade"
+                      hideEffect="fade"
+                      modal="false"
+                      width="550"
+                      height="355"
+                      position="center"
+                      style="font-size:14px; font-family:Verdana">
+		  		      <h:form id="solicitarBoletoForm" name="solicitaBoletoFormName">
+		  		         <p:panel id="solicitarBoletoPanel">
+			  		         <h:panelGrid id="solicitarBoletoGrid" cellpadding="4" columns="1"  style="font-size:12px; font-family:Verdana">
+                           		<h:outputText id="exercicioBoletoId" value="Exercício do Boleto: #{boletoCobrancaAdministrativaMBean.boletoCobrancaAdministrativa.exercicio}" style="font-size:12px;font-weight:bold;font-family:Verdana"/>
+                        		<h:outputText id="razaoSocialId" value="Razão sozial: #{boletoCobrancaAdministrativaMBean.boletoCobrancaAdministrativa.contribuinte.razaoSocial}" style="font-size:12px;font-weight:bold;font-family:Verdana"/>
+								<h:outputText id="cpfcnpjId" value="CPF/CNPJ: #{boletoCobrancaAdministrativaMBean.boletoCobrancaAdministrativa.contribuinte.numeroDoDocumentoFormatado}" style="font-size:12px;font-weight:bold;font-family:Verdana"/>
+                        	</h:panelGrid>
+                        <p:spacer height="15"></p:spacer>
+                        <h:panelGrid id="solicitarBoletoGrid2" cellpadding="4" columns="2"  style="font-size:12px; font-family:Verdana">
+			  		            <h:outputText value="Data do pagamento: "/>
+			  		            <p:calendar id="dataPagamentoID" name="dataPagamentoName" label="Data" value="#{boletoCobrancaAdministrativaMBean.boletoCobrancaAdministrativa.dataPagamentoCR}" readonlyInput ="false" showOn="button" pattern="dd/MM/yyyy" onkeypress="mascara_data(this.value)">
+			  		            	<p:ajax event="dateSelect" listener="#{boletoCobrancaAdministrativaMBean.preparaCalculoValorPagarBoleto}" update="solicitarBoletoForm"/>
+			  		            </p:calendar>
+			  		            <h:outputText value="Forma de cálculo da guia:" />
+					 			<p:selectOneMenu id="formaDeCalculoUtilizada" value="#{boletoCobrancaAdministrativaMBean.boletoCobrancaAdministrativa.formaDeCalculoUtilizada}">
+									<f:selectItems value="#{selectOneMenuMBean.listaFormasDeCalculoDaGuia}" />
+					 			</p:selectOneMenu>
+                           <p:spacer height="5"></p:spacer>
+                        </h:panelGrid>
+                        <p:commandButton icon="ui-icon-calculator" update=":solicitarBoletoForm:solicitarBoletoPanel" value="Calcular" actionListener="#{boletoCobrancaAdministrativaMBean.preparaCalculoValorPagarBoleto}" title="Calcula o valor do boleto a ser pago" style="font-size:12px;font-weight:bold;font-family:Verdana"/>
+                        <p:separator width="50" />
+			  		         <h:panelGrid id="solicitarBoletoGrid3" cellpadding="4" columns="2"  style="font-size:12px; font-family:Verdana">
+                           <p:spacer height="5"></p:spacer>
+                           <h:outputText value=""/>
+                           <h:outputText value="Valor do pagamento: "/>
+			  		            <p:inputText id="valorPagamentoID" value="#{boletoCobrancaAdministrativaMBean.boletoCobrancaAdministrativa.valorPagamentoCR}" onkeypress="mascara(this, valor);" >
+			  		               <f:convertNumber maxFractionDigits="2" pattern="#,##0.00" type="currency"/>
+			  		            </p:inputText>
+
+			  		            <h:outputText value="CPF ou CNPJ: " rendered="false"/>
+                           <p:selectOneRadio id="cpfCnpjID" value="#{boletoCobrancaAdministrativaMBean.cpfCnpjFontePagadora}" rendered="false">
+                              <f:selectItem itemLabel="Agente" itemValue="0" />
+                              <f:selectItem itemLabel="Contribuinte" itemValue="1" />
+                           </p:selectOneRadio>
+
+			  		         </h:panelGrid>
+			  		         <p:spacer height="5"></p:spacer>
+			  	  		      <f:facet name="footer">
+		              	      <p:commandButton id="confirm3" value="#{(boletoCobrancaAdministrativaMBean.boletoCobrancaAdministrativa.statusDaCobranca eq 'BOLETO_SELECIONADO') ? 'Atualizar' : 'Confirmar'}" update=":frmSchedule:listaBoletos, :solicitarBoletoForm, :erroSolicitacaoForm" actionListener="#{boletoCobrancaAdministrativaMBean.solicitarBoleto}" style="width:150px; height:30px; left:5%;font-family:Verdana;font-size:12px;"/>
+			  	 			      <p:commandButton id="decline3" value="Cancelar" onclick="solicitarBoletoDlg.hide()" type="button" style="width:150px; height:30px; left:30%;font-family:Verdana;font-size:12px;"/>
+		                  </f:facet>
+			  		      </p:panel>
+		  		      </h:form>
+		         </p:dialog>
+		         
+	            <p:dialog header="Atenção" widgetVar="erroSolicitacaoDlg" resizable="false" id="erroSolicitacaoDlgId" modal="false" width="500" style="font-size:14px; font-family:Verdana" >
+					   <h:form id="erroSolicitacaoForm">
+	                 <p:panel id="erroSolicitacaoPanel">
+	                    <h:panelGrid id="erroSolicitacaoGrid" cellpadding="6" columns="1" style="font-size:12px; font-family:Verdana; font-weight:bold">
+	                       <h:outputText value="#{boletoCobrancaAdministrativaMBean.msgErroSolicitacaoBoleto}" />
+   	                    <p:spacer height="5"></p:spacer>
+	                    </h:panelGrid>
+	                    <f:facet name="footer">
+         	 			     <p:commandButton id="okId" value="OK" onclick="erroSolicitacaoDlg.hide()" type="button" style="width:150px; height:30px; left:30%;font-family:Verdana;font-size:12px;"/>
+	                    </f:facet>
+	                 </p:panel>
+	              </h:form>
+	           </p:dialog>
+
+				   <p:dialog header="Calculadora" widgetVar="calculadoraDlg" resizable="false" id="calculadoraDlgId" modal="false" width="700" style="font-size:14px; font-family:Verdana" >
+					<h:form id="calculadoraForm">
+						<p:panel id="calculadoraPanel" style="font-size:12px; font-family:Verdana">
+						   <p:growl id="messages" autoUpdate="true" />
+						   <h:panelGrid id="calculadoraGrid" cellpadding="6" columns="1" style="font-size:12px; font-family:Verdana">
+							   <h:outputText value="Simulação de valores de acordos" style="font-weight:bold; font-size:14px; "/>
+							</h:panelGrid>
+                     <p:spacer height="5" />
+                     <h:panelGrid id="calculadoraGrid2" cellpadding="6" columns="2" style="font-size:12px; font-family:Verdana">
+
+                       <h:outputText value="Valor do boleto" />
+                        <p:inputText id="valorBoleto" value="#{boletoCobrancaAdministrativaMBean.calculaGuiaFacade.valorDoPrincipal}" required="true" requiredMessage="É necessário informar o valor do boleto" onkeypress="mascara(this, valor);" style="font-size:12px; font-family:Verdana">
+                           <f:convertNumber pattern="#,##0.00"></f:convertNumber>
+                        </p:inputText>
+
+								<h:outputText value="Data inicial do cálculo:"/>
+						   	<p:calendar id="dtInicialCalculo" value="#{boletoCobrancaAdministrativaMBean.calculaGuiaFacade.dataInicial}"
+                           readonlyInput ="false"
+                           showOn="button"
+                           pattern="dd/MM/yyyy" required="true" requiredMessage="É necessário informar a data inicial do cálculo" style="font-size:12px; font-family:Verdana" onkeypress="mascaraData(this);">
+                        </p:calendar>
+
+				  		      <h:outputText value="Data final do cálculo:"/>
+				  		      <p:calendar id="dtFinalCalculo" value="#{boletoCobrancaAdministrativaMBean.calculaGuiaFacade.dataFinal}"
+                           readonlyInput ="false"
+                           showOn="button"
+                           pattern="dd/MM/yyyy" required="true" requiredMessage="É necessário informar a data final do cálculo" style="font-size:12px; font-family:Verdana" onkeypress="mascaraData(this);">
+                        </p:calendar>
+
+								<h:outputText value="Forma de cálculo da guia:" />
+								<p:selectOneMenu id="formaDeCalculoUtilizada2" value="#{boletoCobrancaAdministrativaMBean.calculaGuiaFacade.formaDeCalculoDeGuia}" style="font-size:12px; font-family:Verdana">
+							      <f:selectItems value="#{selectOneMenuMBean.listaFormasDeCalculoDaGuia}"/>
+                        </p:selectOneMenu>
+
+								<h:outputText value="Multa: " />
+	                     <h:outputText value="R$ #{boletoCobrancaAdministrativaMBean.calculaGuiaFacade.valorDaMulta}" style="font-size:12px; font-family:Verdana">
+	                        <f:convertNumber pattern="#,##0.00"></f:convertNumber>
+                        </h:outputText>
+
+								<h:outputText value="Juros: " />
+	                     <h:outputText value="R$ #{boletoCobrancaAdministrativaMBean.calculaGuiaFacade.valorDosJuros}" style="font-size:12px; font-family:Verdana">
+	                        <f:convertNumber pattern="#,##0.00"></f:convertNumber>
+                        </h:outputText>
+
+								<h:outputText value="Atualização monetária: " />
+	                     <h:outputText value="R$ #{boletoCobrancaAdministrativaMBean.calculaGuiaFacade.valorDaAtualizacaoMonetaria}" style="font-size:12px; font-family:Verdana" >
+	                        <f:convertNumber pattern="#,##0.00"></f:convertNumber>
+                        </h:outputText>
+
+								<h:outputText value="Valor calculado do acordo: " />
+                        <h:outputText value="R$ #{boletoCobrancaAdministrativaMBean.calculaGuiaFacade.valorCorrigidoDaGuiaJudicial}" style="font-size:12px; font-family:Verdana">
+	                        <f:convertNumber pattern="#,##0.00"></f:convertNumber>
+                        </h:outputText>
+
+                        <p:spacer height="10"></p:spacer>
+
+							</h:panelGrid>
+							<f:facet name="footer">
+			  				      <p:commandButton icon="ui-icon-calculator" update=":calculadoraForm:calculadoraPanel" value="Calcular" actionListener="#{boletoCobrancaAdministrativaMBean.simularValorAcordo}" title="Calcular valor do acordo" style="width:150px; height:30px; left:5%;font-family:Verdana;font-size:12px;"/>
+			  				      <p:spacer width="10"></p:spacer>
+			  				      <p:commandButton update=":calculadoraForm:calculadoraGrid2" value="Limpar campos" actionListener="#{boletoCobrancaAdministrativaMBean.limpaCamposCalculadora}" title="Limpar campos para nova simulação" style="width:130px; height:30px; left:5%;font-family:Verdana;font-size:12px;"/>
+			  				      <p:commandButton value="Fechar" onclick="calculadoraDlg.hide()" immediate="true" title="Fechar" style="width:150px; height:30px; left:25%;font-family:Verdana;font-size:12px;"/>
+			  			      </f:facet>
+						</p:panel>
+					</h:form>
+			   </p:dialog>
+
+				   <p:dialog header="Histórico de movimentação do boleto" widgetVar="historicoMovimentacaoBoletoDlg" resizable="false" id="historicoMovimentacaoBoletoDlgId" modal="false" width="980" style="font-size:14px;font-family:Verdana" >
+						<h:form id="historicoMovimentacaoBoletoForm">
+							<p:panel id="historicoMovimentacaoBoletoPanel">
+	   				      <h:panelGrid id="historicoMovimentacaoBoletoGrid" cellpadding="2" columns="1" style="font-weight:bold;font-size:14px;font-family:Verdana">
+	   						   <h:outputText value="Exercício: #{controleLoteCobrancaAdminMBean.boletoCobrancaAdministrativa.exercicio}" />
+	   						   <h:outputText id="razaoSocialId" value="Razão sozial: #{controleLoteCobrancaAdminMBean.boletoCobrancaAdministrativa.contribuinte.razaoSocial}" style="font-size:12px;font-weight:bold;font-family:Verdana"/>
+							   <h:outputText id="cpfcnpjId" value="CPF/CNPJ: #{controleLoteCobrancaAdminMBean.boletoCobrancaAdministrativa.contribuinte.numeroDoDocumentoFormatado}" style="font-size:12px;font-weight:bold;font-family:Verdana"/>
+	                     </h:panelGrid>
+
+	                     <p:spacer height="10" />
+
+	                     <h:panelGrid id="historicoMovimentacaoBoletoGrid2" cellpadding="6" columns="6" style="font-size:12px;font-family:Verdana">
+	                        <h:outputText value="Data de solicitação/protocolamento: " style="font-weight:bold;"/>
+	                        <h:outputText value="#{controleLoteCobrancaAdminMBean.boletoCobrancaAdministrativa.dataSolicitacaoFormatada}" />
+	                        <h:outputText value="Data da solicitação para CNA: " style="font-weight:bold;"/>
+	                        <h:outputText value="#{controleLoteCobrancaAdminMBean.boletoCobrancaAdministrativa.dataSolicitacaoCNAFormatada}" />
+	                        <h:outputText value="Data do atendimento: " style="font-weight:bold;"/>
+	                        <h:outputText value="#{controleLoteCobrancaAdminMBean.boletoCobrancaAdministrativa.dataDoAtendimentoFormatada}" />
+	                     </h:panelGrid>
+
+	                     <p:spacer height="10" />
+
+	                     <h:panelGrid id="historicoMovimentacaoBoletoGrid3" cellpadding="6" columns="1" style="font-weight:bold;font-size:12px;font-family:Verdana" rendered="#{(loginMBean.agenteUsuarioLogin.tipoDoUsuario eq 'USUARIO_INTERNO') ? 'true' : 'false'}">
+	   						   <h:outputText value="Boleto impresso #{controleLoteCobrancaAdminMBean.boletoCobrancaAdministrativa.quantidadeImpressao} vez(es) pela CONNECT"/>
+	   						   <h:outputText value="Última impressão: #{controleLoteCobrancaAdminMBean.boletoCobrancaAdministrativa.dataUltimaImpressao}"/>
+	   						   <p:spacer height="3" />
+	                     </h:panelGrid>
+
+	                     <p:dataTable id="historicoMovimentacaoBoletoTable" var="historicoMovimentacaoBoleto" value="#{controleLoteCobrancaAdminMBean.historicoMovimentacaoBoletoList}" scrollable="true" scrollHeight="150" style="width:auto; font-size:12px;font-family:Verdana" resizableColumns="true">
+
+		                     <p:column width="400" sortBy="#{historicoMovimentacaoBoleto.tipoDeStatusHistoricoMovimentacao.label}" filterBy="#{historicoMovimentacaoBoleto.tipoDeStatusHistoricoMovimentacao.label}">
+		                        <f:facet name="header">
+		                           <h:outputText value="Movimentação" />
+		                        </f:facet>
+			                     <h:outputText value="#{historicoMovimentacaoBoleto.tipoDeStatusHistoricoMovimentacao.label}" />
+		                     </p:column>
+
+	                        <p:column width="170" sortBy="#{historicoMovimentacaoBoleto.dataMovimentacaoFormatada}" filterBy="#{historicoMovimentacaoBoleto.dataMovimentacaoFormatada}" style="text-align: center;">
+	                           <f:facet name="header" >
+		                           <h:outputText value="Data da movimentação" />
+		                        </f:facet>
+			                     <h:outputText value="#{historicoMovimentacaoBoleto.dataMovimentacaoFormatada}" />
+		                     </p:column>
+
+		                     <p:column width="170" sortBy="#{historicoMovimentacaoBoleto.usuarioResponsavel.nome}" filterBy="#{historicoMovimentacaoBoleto.usuarioResponsavel.nome}" style="text-align: center;">
+	                           <f:facet name="header" >
+		                           <h:outputText value="Usuário responsável" />
+		                        </f:facet>
+			                     <h:outputText value="#{historicoMovimentacaoBoleto.usuarioResponsavel.nome}" />
+		                     </p:column>
+
+								</p:dataTable>
+                        <f:facet name="footer" >
+	                        <p:commandButton id="idBtnFecharHistorico"
+	                                      onclick="historicoMovimentacaoBoletoDlg.hide()"
+	                                      value="Fechar"
+	                                      title="Fecha a janela de histórico do boleto"
+	                                      style="width:100px;font-size:12px;font-family:Verdana"/>
+	                     </f:facet>
+							</p:panel>
+						</h:form>
+			      </p:dialog>
+
+	      </p:layoutUnit>
+
+	      <p:layoutUnit id="loutMenu" position="west" style="opacity:1" size="320" resizable="true">
+				<h:form id="frmMenu" style="font-family:Verdana; font-size:12px">
+					<p:menu style="width: 300px; height: 110px;">
+                     <p:menuitem id="judiciais"
+                                 value="Solicitação de boletos"
+                                 action="#{boletoCobrancaAdministrativaMBean.formularioBoletoCobrancaAdministrativa()}"
+                                 icon="ui-icon-suitcase" style="font-family:Verdana; font-size:12px"
+                                 disabled="false"/>
+                     <p:menuitem id="vencimentos"
+                                 value="Histórico de cobrança de boletos"
+                                 action="#{boletoCobrancaAdministrativaMBean.listarVencimentoDeBoletosEmAcordo()}"
+                                 icon="ui-icon-clock"
+                                 rendered="false" style="font-family:Verdana; font-size:12px"/>
+                     <p:menuitem id="cobrancaAdminitrativa"
+	                              value="Envio de lotes de boletos solicitados"
+	                              action="#{boletoCobrancaAdministrativaMBean.listarBoletosSelecionadosCobrancaAdmin()}"
+	                              icon="ui-icon-plus" style="font-family:Verdana; font-size:12px"
+	                              disabled="false"/>
+                     <p:menuitem id="controleDeLoteCobrancaAdmin"
+                                 value="Controle de lotes de boletos solicitados"
+                                 action="#{controleLoteCobrancaAdminMBean.listarLotesDeDocumentosCobrancaAdmin()}"
+                                 icon="ui-icon-cart" style="font-family:Verdana; font-size:12px"
+                                 disabled="false"/>
+                     <p:menuitem id="calculadora"
+                                 value="Calculadora"
+                                 actionListener="#{boletoCobrancaAdministrativaMBean.limpaCamposCalculadora}"
+                                 update=":calculadoraForm:calculadoraGrid2"
+	    		                     oncomplete="calculadoraDlg.show()"
+                                 icon="ui-icon-calculator" style="font-family:Verdana; font-size:12px"/>
+		        </p:menu>
+				</h:form>
+	      </p:layoutUnit>
+
+	      <p:layoutUnit position="south" size="40" resizable="false" closable="false" collapsible="false" style="opacity:1">
+            <p:messages id="msg" autoUpdate="true" for="frmAcordo"/>
+         </p:layoutUnit>
+
+	   </p:layout>
+	   </f:view>
+	</h:body>
+</html>

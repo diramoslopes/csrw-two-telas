@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:composition template="templ_antigo.xhtml">
+		<ui:define name="ident_modulo">
+      	<h:outputLabel value="(Escritório: #{loginMBean.agenteUsuarioLogin.grupoDeTrabalho.nomeDoGrupo})" style="font-size:12px;  font-weight:bold" />
+		</ui:define>
+		<ui:define name="acesso_externo">
+			<h:outputLabel value="#{loginMBean.nomeDoUsuarioAtivoEPerfilUtilizado}   " title="#{loginMBean.nomeDoEscritorio}" />
+			<p:commandLink value="Sair" action="#{loginMBean.logoutUsuario()}" style="color: red;"/>
+		</ui:define>
+ 		<ui:define name="areadetrabalho">
+         <p:growl id="growl" showDetail="true" />
+
+         <p:dashboard id="princBoard" model="#{principalDashBoardMBean.model}" rendered="#{agendaMBean.atualizaResumos()}" >
+
+				<p:ajax event="reorder" listener="#{principalDashBoardMBean.handleReorder}" update="growl" />
+
+				<p:panel id="dsbAgenda" header="Alertas">
+               <p:dataTable id="tblResumoAgenda" var="resumoAgenda" value="#{agendaMBean.resumoQuantidadeEventosAgendas}"
+                            paginator="true" paginatorPosition="bottom" rows="6" style="width:100%; font-size:14px"
+                            resizableColumns="true"
+                            emptyMessage="Não há lembretes ou alertas na agenda">
+                  <p:column style="width:150px" >
+                     <f:facet name="header">
+                        <h:outputText value="Tipo" />
+                     </f:facet>
+                     <h:outputText value="#{resumoAgenda.tipoDaEntradaNaAgenda.label}" />
+                  </p:column>
+
+                  <p:column style="width:50px; color:red; text-align:center" >
+                     <f:facet name="header">
+                        <h:outputText value="Hoje" />
+                     </f:facet>
+							<p:commandLink id="lnkCompromissosHoje" value="#{resumoAgenda.quantidadeOcorrenciasHoje}" action="#{agendaMBean.listarOcorrenciasHoje(resumoAgenda.tipoDaEntradaNaAgenda)}" style="color:red" />
+                  </p:column>
+
+                  <p:column style="width:50px; color:blue; text-align:center">
+                     <f:facet name="header">
+                        <h:outputText value="Amanhã" />
+                     </f:facet>
+                     <p:commandLink id="lnkCompromissosAmanha" value="#{resumoAgenda.quantidadeOcorrenciasAmanha}" action="#{agendaMBean.listarOcorrenciasAmanha(resumoAgenda.tipoDaEntradaNaAgenda)}" style="color:blue" />
+                  </p:column>
+
+                  <p:column style="width:80px color:green; text-align:center">
+                     <f:facet name="header">
+                        <h:outputText value="Próx. 07 dias" />
+                     </f:facet>
+                     <p:commandLink id="lnkCompromissos07dias" value="#{resumoAgenda.quantidadeOcorrenciasProximos07dias}" action="#{agendaMBean.listarOcorrenciasProx07Dias(resumoAgenda.tipoDaEntradaNaAgenda)}" style="color:green" />
+                  </p:column>
+
+                  <p:column style="width:80px color:green; text-align:center">
+                     <f:facet name="header">
+                        <h:outputText value="Próx. 30 dias" />
+                     </f:facet>
+                     <p:commandLink id="lnkCompromissos30Dias" value="#{resumoAgenda.quantidadeOcorrenciasProximos30dias}" action="#{agendaMBean.listarOcorrenciasProx30Dias(resumoAgenda.tipoDaEntradaNaAgenda)}" style="color:green" />
+                  </p:column>
+                  <f:facet name="footer">
+                     Resumo
+                  </f:facet>
+               </p:dataTable>
+				</p:panel>
+
+				<p:panel id="dsbAlertas" header="Alertas" rendered="false">
+               <p:panelGrid id="grdAlertas" columns="2">
+					   <h:outputText value="Lidos: " />
+					   <h:outputText id="alrtQtdLidos" value="0" style="color:blue;" />
+                  <h:outputText value="Não lidos: " />
+                  <h:outputText id="alrtQtdNaoLidos" value="0" style="color:red;" />
+                  <h:outputText value="Pendentes: " />
+                  <h:outputText id="alrtQtdPend" value="0" style="color:red;" />
+                  <h:outputText value="Resolvidos: " />
+                  <h:outputText id="alrtQtdResolv" value="0" style="color:green;" />
+               </p:panelGrid>
+				</p:panel>
+
+				<p:panel id="dsbFinancas" header="Finanças" rendered="false">
+               <p:panelGrid id="grdFinancas" columns="5">
+                  <h:outputText value="Natureza"  />
+					   <h:outputText value="Hoje" />
+                  <h:outputText value="Amanhã" />
+                  <h:outputText value="Próx. 7 dias"  />
+                  <h:outputText value="Próx. 30 dias"  />
+                  <h:outputText value="à receber" style="color:green;" />
+                  <h:outputText id="fincQtdRec_Hoje" value="0" style="color:green;"/>
+                  <h:outputText id="fincQtdRec_Amanha" value="0" style="color:green;" />
+                  <h:outputText id="fincQtdRec_07Dias" value="0" />
+                  <h:outputText id="fincQtdRec_30Dias" value="0" />
+                  <h:outputText value="à pagar" style="color:red;" />
+                  <h:outputText id="fincQtdPag_Hoje" value="0" style="color:red;" />
+                  <h:outputText id="fincQtdPag_Amanha" value="0" style="color:red;" />
+                  <h:outputText id="fincQtdPag_07Dias" value="0" />
+                  <h:outputText id="fincQtdPag_30Dias" value="0" />
+               </p:panelGrid>
+				</p:panel>
+         </p:dashboard>
+		</ui:define>
+		<ui:define name="menu">
+			<h:form id="frmMenu" style="font-family:Verdana; font-size:12px">
+				<p:menu style="width: 97%; height: 100%;">
+                  <p:menuitem id="campanhaAtualizacao"
+                              value="Cadastro Ações/Acordos"
+                              action="#{acaoMBean.formularioCampanhaAtualizacao()}"
+                              icon="ui-icon-pencil"
+                              style="color:blue"/>
+	               <p:menuitem id="tratamentoDeCustasAnaliseEPagamento"
+	                           value="Cadastro Custas processuais"
+	                           title="Cadastramento, envio e consulta de custas processuais"
+	                           icon="ui-icon-check"
+	                           action="#{acaoMBean.formularioTrataCustasJudiciais()}"
+	                           style="color:blue" rendered="false"/>
+                  <p:menuitem id="judiciais"
+                              value="Ações / Acordos"
+                              action="#{acaoMBean.formularioJudiciais()}"
+                              rendered="false"
+                              icon="ui-icon-suitcase"/>
+                  <p:menuitem id="cobrancaAdministrativa"
+                              value="Solicitação de boletos (Notificações)"
+                              action="#{boletoCobrancaAdministrativaMBean.direcionaAmbienteBoletos()}"
+                              icon="ui-icon-document"/>
+                  <p:menuitem id="relatoriosadv"
+                              value="Relatórios"
+                              icon="ui-icon-print"
+                              action="#{agenteBoletoAcaoAcordoMBean.formularioRelatorioAdvExterno}"
+                              rendered="true"/>
+                  <p:menuitem id="compromissos"
+                              value="Alertas"
+                              action="#{agendaMBean.formulario()}"
+                              icon="ui-icon-clock"/>
+                  <p:menuitem id="pesqJurisprudencia"
+                              value="Jurisprudência"
+                              action="#{jurisprudenciaMBean.listar()}"
+                              icon="ui-icon-script"/>
+	        </p:menu>
+			</h:form>
+		</ui:define>
+      <ui:define name="alerta">
+         <h:form id="frmMensagem">
+         	<h:outputLabel value=" " style="font-size:14px;color:blue;font-weight: bold;"/>
+         </h:form>
+		</ui:define>
+	</ui:composition>
+</html>

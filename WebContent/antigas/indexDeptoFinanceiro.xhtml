@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:composition template="templ_antigo.xhtml">
+		<ui:define name="ident_modulo">
+         <h:outputLabel value="(Depto: Financeiro - acesso interno)" style="font-size:12px;  font-weight:bold" />
+		</ui:define>
+		<ui:define name="acesso_interno">
+			<h:outputLabel value="#{loginMBean.nomeDoUsuarioAtivoEPerfilUtilizado}   " title="#{loginMBean.nomeDoEscritorio}" />
+			<p:commandLink value="Sair" action="#{loginMBean.logoutUsuario()}" style="color: red;"/>
+		</ui:define>
+ 		<ui:define name="areadetrabalho">
+	         <p:growl id="growl" showDetail="true" />
+	         <p:dashboard id="princBoard" model="#{principalDashBoardMBean.model}" rendered="true" >
+
+					<p:ajax event="reorder" listener="#{principalDashBoardMBean.handleReorder}" update="growl" />
+
+					<p:panel id="dsbAlertas" header="Alertas" rendered="false" style="font-size:12px; font-weight:bold">
+	               <p:panelGrid id="grdAlertas" columns="2">
+						   <h:outputText value="Lidos: " />
+						   <h:outputText id="alrtQtdLidos" value="0" style="color:blue;" />
+	                  <h:outputText value="Não lidos: " />
+	                  <h:outputText id="alrtQtdNaoLidos" value="0" style="color:red;" />
+	                  <h:outputText value="Pendentes: " />
+	                  <h:outputText id="alrtQtdPend" value="0" style="color:red;" />
+	                  <h:outputText value="Resolvidos: " />
+	                  <h:outputText id="alrtQtdResolv" value="0" style="color:blue;" />
+	               </p:panelGrid>
+					</p:panel>
+
+					<p:panel id="dsbFinancas" header="Programação" rendered="false" style="font-size:12px;  font-weight:bold">
+	               <p:panelGrid id="grdFinancas" columns="5">
+	                  <h:outputText value="Natureza"  />
+						   <h:outputText value="Hoje" />
+	                  <h:outputText value="Amanhã" />
+	                  <h:outputText value="Próx. 7 dias"  />
+	                  <h:outputText value="Próx. 30 dias"  />
+	                  <h:outputText value="à pagar" style="color:red;" />
+	                  <h:outputText id="fincQtdPag_Hoje" value="0" style="color:red;" />
+	                  <h:outputText id="fincQtdPag_Amanha" value="0" style="color:red;" />
+	                  <h:outputText id="fincQtdPag_07Dias" value="0" />
+	                  <h:outputText id="fincQtdPag_30Dias" value="0" />
+	                  <h:outputText value="à receber" style="color:blue;" />
+	                  <h:outputText id="fincQtdRec_Hoje" value="0" style="color:blue;"/>
+	                  <h:outputText id="fincQtdRec_Amanha" value="0" style="color:blue;" />
+	                  <h:outputText id="fincQtdRec_07Dias" value="0" />
+	                  <h:outputText id="fincQtdRec_30Dias" value="0" />
+	               </p:panelGrid>
+					</p:panel>
+	         </p:dashboard>
+
+	         <p:dialog header="Seleção do agente de cobrança judicial"
+	                   id="idDlgSelAgenteExterno"
+	                   widgetVar="dlgSelAgenteExterno"
+	                   closable="false"
+	                   resizable="true"
+	                   modal="false"
+	                   showEffect="fade"
+	                   hideEffect="fade"
+	                   width="500"
+	                   position="center"
+	                   style="font-size:12px;opacity:1">
+		            <h:form id="frmSelAgenteExterno">
+							<p:panel id="dspSelAgenteExterno">
+								<p:panelGrid id="pnlgrdSelAgenteExterno" columns="2">
+	                        <h:outputLabel value="Selecione um agente: "/>
+	                        <p:selectOneMenu id="cmbAgentesExternosDesseUsuario" 
+	                                         value="#{loginMBean.agenteUsuario.agente.id}"
+	                                         style="width:300px;font-size:11px;"
+	                                         panelStyle="width:150px;font-size:10px;font-family:Verdana">
+	                           <f:selectItems noSelectionValue="#{loginMBean.agenteUsuario.agente}" value="#{selectOneMenuMBean.listaDeAgentesDoGrupoDeTrabalho}"/>
+	                        </p:selectOneMenu>
+								</p:panelGrid>
+			               <p:spacer height="5"/>
+			               <p:toolbar>
+			                  <p:toolbarGroup align="left">
+			                     <p:commandButton id="btnAgenteSelecionadoOk"
+			                                      icon="ui-icon-check"
+		                                         disabled="false"
+			                                      action="#{loginMBean.populaAgenteParaTrabalharDeUsuarioInterno()}"
+			                                      oncomplete="dlgSelAgenteExterno.hide()"
+			                                      value="Ok"
+		                                         update=":frmMenu :frmMensagem :frmIdUsuarioLogado"
+			                                      title="Utilizar esse agente para analise"
+			                                      style="width:100px;"/>
+			                     <p:commandButton id="btnAgenteSelecionadoFechar"
+			                                      icon="ui-icon-circle-triangle-w"
+			                                      value="Fechar"
+			                                      oncomplete="dlgSelAgenteExterno.hide()"
+		                                         update=":frmMenu :frmMensagem :frmIdUsuarioLogado"
+			                                      title="Fechar"
+			                                      style="width:100px;"/>
+			                  </p:toolbarGroup>
+			               </p:toolbar>
+
+							</p:panel>
+		            </h:form>
+	         </p:dialog>
+	         
+		</ui:define>
+		<ui:define name="menu">
+			<h:form id="frmMenu" style="font-family:Verdana; font-size:12px">
+				<p:menu style="width: 97%; height: auto;">
+               <p:menuitem id="selAgente"
+                           value="Selecione um agente de cobrança"
+                           onclick="dlgSelAgenteExterno.show()"
+                           title="Selecione um agente de cobrança para analise"
+                           rendered="false"
+                           icon="ui-icon-person"/>
+               <p:menuitem id="analiseCustasDespesas"
+                           value="Liberação de Custas processuais"
+                           title="Liberação para o pagamento das Custas processuais enviadas pelos agentes de cobrança"
+                           icon="ui-icon-check"
+                           action="#{custaProcessualMBean.formularioLiberacaoDeCustas()}"
+                           disabled="#{!loginMBean.acessoInterno}"/>
+               <p:menuitem id="pagamentoCustasDespesas"
+                           value="Pagamento de Custas processuais"
+                           title="Pagamento das Custas processuais enviadas pelos agentes de cobrança"
+                           icon="ui-icon-check"
+                           action="#{custaProcessualMBean.formularioPagamentoDeCustas()}"
+                           disabled="#{!loginMBean.acessoInterno}"/>
+               <p:menuitem id="honorariosCobranca"
+                           value="Honorários"
+                           title="Liberação do pagamento de honorários"
+                           icon="ui-icon-suitcase"
+                           action="#{honorariosMBean.formulario()}"
+                           disabled="true"
+                           style="color:blue"/>
+               <p:menuitem id="tiposDeLancamento"
+                           value="Tipos de lançamento"
+                           title="Cadastro de tipos de lançamento"
+                           icon="ui-icon-document"
+                           action="#{tipoDeLancamentoMBean.formulario()}"
+                           rendered="true"
+                           disabled="#{!loginMBean.acessoInterno}"/>
+        		</p:menu>
+			</h:form>
+		</ui:define>
+      <ui:define name="alerta">
+         <h:form id="frmMensagem">
+         	<h:outputLabel value=" " style="font-size:14px;color:blue;font-weight: bold;"/>
+         </h:form>
+		</ui:define>
+	</ui:composition>	
+</html>

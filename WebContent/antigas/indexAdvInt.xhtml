@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:composition template="templ_antigo.xhtml">
+		<ui:define name="ident_modulo">
+	   	<h:outputLabel value="(Depto: Jurídico - acesso interno)" style="font-size:12px;  font-weight:bold" />
+		</ui:define>
+		<ui:define name="acesso_interno">
+			<h:outputLabel value="#{loginMBean.nomeDoUsuarioAtivoEPerfilUtilizado}   " title="#{loginMBean.nomeDoEscritorio}" />
+			<p:commandLink value="Sair" action="#{loginMBean.logoutUsuario()}" style="color: red;"/>
+		</ui:define>
+ 		<ui:define name="areadetrabalho">
+         <h:form id="frmIndexAdvInt">
+				<p:messages id="errMessages" showDetail="true" autoUpdate="true" closable="true" style="font-size:12px;font-family:Verdana"/>
+	         <p:growl id="growl" showDetail="true" />
+
+	         <p:dashboard id="princBoard" model="#{principalDashBoardMBean.model}" rendered="true" >
+
+					<p:ajax event="reorder" listener="#{principalDashBoardMBean.handleReorder}" update="growl" />
+
+					<p:panel id="dsbResumoAcoesAcordos"
+					         header="Quantidade de ações/acordos informados ào sistema"
+					         rendered="false">
+	               <p:dataTable id="tblResumoAcoesAcordos"
+	                            var="resumoDoTrabalhoDosAgentes"
+	                            value="#{agenteBoletoAcaoAcordoMBean.resumoDoTrabalhoDosAgentes}"
+	                            paginator="true"
+	                            paginatorPosition="bottom"
+	                            rows="20"
+	                            style="width:100%; font-size:14px">
+	                  <p:column style="width:350px" sortBy="#{resumoDoTrabalhoDosAgentes.nomeDoAgente}" headerText="Agente de cobrança" >
+                        <h:outputText value="#{resumoDoTrabalhoDosAgentes.nomeDoAgente}" style="color:blue" />
+	                  </p:column>
+
+	                  <p:column style="width:80px color:green; text-align:center" sortBy="#{resumoDoTrabalhoDosAgentes.quantidadeDeBoletosTrabalhados}" headerText="Boletos trabalhados" rendered="false">
+                        <h:outputText value="#{resumoDoTrabalhoDosAgentes.quantidadeDeBoletosTrabalhados}" style="color:green" />
+	                  </p:column>
+
+	                  <p:column style="width:80px color:green; text-align:center" headerText="Ações" sortBy="#{resumoDoTrabalhoDosAgentes.quantidadeDeAcoes}">
+                        <p:commandLink id="lnkDirecionaParaAcoes" value="#{resumoDoTrabalhoDosAgentes.quantidadeDeAcoes}" action="#{acaoMBean.listaAcoesDoAgente(resumoDoTrabalhoDosAgentes.id_agente)}" style="color:green" />
+	                  </p:column>
+
+	                  <p:column style="width:80px color:green; text-align:center" sortBy="#{resumoDoTrabalhoDosAgentes.quantidadeDeAcordosJudiciais}" headerText="Acordos (Judic.)">
+                        <p:commandLink id="lnkDirecionaParaAcordosJudic" value="#{resumoDoTrabalhoDosAgentes.quantidadeDeAcordosJudiciais}" action="#{acaoMBean.listaAcordosJudiciaisDoAgente(resumoDoTrabalhoDosAgentes.id_agente)}" style="color:green" />
+	                  </p:column>
+
+	                  <p:column style="width:80px color:green; text-align:center" sortBy="#{resumoDoTrabalhoDosAgentes.quantidadeDeAcordos}" headerText="Acordos (Todos)">
+                        <p:commandLink id="lnkDirecionaParaAcordos"
+                                       value="#{resumoDoTrabalhoDosAgentes.quantidadeDeAcordos}"
+                                       action="#{acaoMBean.listaAcordosDoAgente(resumoDoTrabalhoDosAgentes.id_agente)}"
+                                       ajax="true"
+                                       immediate="true"
+                                       style="color:green">
+                        </p:commandLink>
+	                  </p:column>
+
+	               </p:dataTable>
+					</p:panel>
+	         </p:dashboard>
+
+            <p:dialog id="idPorFavorAguardeDialog"
+                      widgetVar="porFavorAguardeDialog"
+                      closable="false"
+                      header="Processando..."
+                      resizable="false"
+                      modal="false"
+                      showEffect="fade"
+                      hideEffect="fade"
+                      width="300" position="center"
+                      appendToBody="true"
+                      style="font-size:14px">
+               <p:panel id="pnlAguarde">
+                  <p:spacer height="20"></p:spacer>
+                  <h:outputText id="lblAguarde" value="Por favor aguarde..."/>
+                  <p:spacer height="20"/>
+               </p:panel>
+            </p:dialog>
+	      </h:form>
+         <p:dialog header="Seleção do agente de cobrança Externo"
+                   id="idDlgSelAgenteExterno"
+                   widgetVar="dlgSelAgenteExterno"
+                   closable="false"
+                   resizable="true"
+                   modal="false"
+                   showEffect="fade"
+                   hideEffect="fade"
+                   width="500"
+                   position="center"
+                   style="font-size:12px;opacity:1">
+	            <h:form id="frmSelAgenteExterno">
+						<p:panel id="dspSelAgenteExterno">
+							<p:panelGrid id="pnlgrdSelAgenteExterno" columns="2">
+                        <h:outputLabel value="Selecione um agente: "/>
+                        <p:selectOneMenu id="cmbAgentesExternosDesseUsuario"
+                                         value="#{loginMBean.agenteUsuario.agente.id}"
+                                         style="width:300px;font-size:11px;"
+                                         panelStyle="width:150px;font-size:10px;font-family:Verdana">
+                           <f:selectItems noSelectionValue="#{loginMBean.agenteUsuario.agente}" value="#{selectOneMenuMBean.listaDeAgentesDoGrupoDeTrabalho}"/>
+                        </p:selectOneMenu>
+							</p:panelGrid>
+		               <p:spacer height="5"/>
+		               <p:toolbar>
+		                  <p:toolbarGroup align="left">
+		                     <p:commandButton id="btnAgenteSelecionadoOk"
+		                                      icon="ui-icon-check"
+	                                         disabled="false"
+		                                      action="#{loginMBean.populaAgenteParaTrabalharDeUsuarioInterno()}"
+		                                      oncomplete="dlgSelAgenteExterno.hide()"
+		                                      value="Ok"
+		                                      update=":frmMenu :frmMensagem :frmIdUsuarioLogado"
+		                                      title="Utilizar esse agente para analise"
+		                                      style="width:100px;"/>
+		                     <p:commandButton id="btnAgenteSelecionadoFechar"
+		                                      icon="ui-icon-circle-triangle-w"
+		                                      value="Fechar"
+		                                      oncomplete="dlgSelAgenteExterno.hide()"
+		                                      title="Fechar"
+		                                      style="width:100px;"/>
+		                  </p:toolbarGroup>
+		               </p:toolbar>
+
+						</p:panel>
+	            </h:form>
+         </p:dialog>
+		</ui:define>
+		<ui:define name="menu">
+			<h:form id="frmMenu" style="font-family:Verdana; font-size:12px">
+				<p:menu style="width: 97%; height: auto;">
+                  <p:menuitem id="cnaReAdvInterno"
+                              value="CNA Ré"
+                              title="Ações movidas contra CNA"
+                              disabled="false" 
+                              icon="ui-icon-pencil"
+                              style="color:blue"
+                              rendered="false"/>
+                  <p:menuitem id="selAgente"
+                              value="Selecione um agente de cobrança"
+                              onclick="dlgSelAgenteExterno.show()"
+                              title="Selecione um agente de cobrança para analise"
+                              icon="ui-icon-person"/>
+                  <p:menuitem id="campanhaAtualizacao"
+                              value="Cadastro Ações/Acordos"
+                              action="#{acaoMBean.formularioCampanhaAtualizacao()}"
+                              disabled="#{loginMBean.agenteUsuario==null||loginMBean.agenteUsuario.agente==null||loginMBean.agenteUsuario.agente.id==null}" 
+                              icon="ui-icon-pencil"
+                              style="color:blue"/>
+                  <p:menuitem id="campanhaRelatoriosAdv"
+                              value="Relatórios (Advogado)"
+                              title="Relatórios disponibilizados ao advogado selecionado"
+                              action="#{acaoMBean.formularioCampanhaRelatoriosAdv()}"
+                              disabled="#{loginMBean.agenteUsuario==null||loginMBean.agenteUsuario.agente==null||loginMBean.agenteUsuario.agente.id==null}" 
+                              icon="ui-icon-print"
+                              style="color:blue"/>
+					<p:separator></p:separator>                              
+                  <p:menuitem id="cobrancaAdministrativa"
+                              value="Solicitação de boletos"
+                              action="#{boletoCobrancaAdministrativaMBean.formularioEntradaPeloMenuDoAdvogadoInterno()}"
+                              icon="ui-icon-document"/>
+                  <p:menuitem id="boletosDevolvidos"
+                              value="Boletos devolvidos"
+                              action="#{boletoDevolvidoMBean.formulario()}"
+                              icon="ui-icon-circle-arrow-e"
+                              rendered="false"/>
+                  <p:menuitem id="judiciais"
+                              value="Contribuintes com ou sem Ações/Acordos"
+                              title="Acesso às ações e acordo cadastrados pelos agentes de cobrança para manutenção e/ou andamentos de Segunda e Terceira instancia"
+                              action="#{acaoMBean.formularioJudiciais()}"
+                              icon="ui-icon-pencil"
+                              disabled="#{loginMBean.agenteUsuario==null||loginMBean.agenteUsuario.agente==null||loginMBean.agenteUsuario.agente.id==null}" 
+                              rendered="false"/>
+                  <p:menuitem id="analiseCustasJudiciais"
+                              value="Analise de custas judiciais"
+                              title="Acesso para análise/aprovação das custas informadas pelo agente de cobrança"
+                              icon="ui-icon-check"
+                              action="#{custaProcessualMBean.formularioAnaliseCustas()}"
+                              disabled="#{!loginMBean.acessoInterno}"
+                              rendered="false"
+                              style="color:blue"/>
+                  <p:menuitem id="relAgentes"
+                              value="Resumo geral"
+                              title="Resumo das quantidades de boletos, ações e acordos trabalhados."
+                              icon="ui-icon-print"
+                              action="#{agenteBoletoAcaoAcordoMBean.formularioResumoGeral()}"/>
+                  <p:menuitem id="difvaloresPagos"
+                              value="Guias (pagos/não pagos)"
+                              title="Relatório de guias com cálculo informando a diferença de pagamentos."
+                              icon="ui-icon-print"
+                              action="#{agenteBoletoAcaoAcordoMBean.formularioBoletosComCalculo()}"/>
+                  <p:menuitem id="pesqTribunal"
+                              value="Tribunal"
+                              action="#{tribunalMBean.listar()}"
+                              icon="ui-icon-home"
+                              disabled="true"
+                              rendered="false"/>
+                  <p:menuitem id="CadForunsJusticaDoTrabalho"
+                              value="Justiça do trabalho"
+                              title="Manutenção de Justiça do Trabalho que serão utilizadas nas ações"
+                              icon="ui-icon-flag"
+                              disabled="true"
+                              rendered="false"/>
+                  <p:menuitem id="CadTipoDeDespesaProcessual"
+                              value="Tipos de Custas / Despesas processuais"
+                              title="Manutenção dos Tipos de Custas/Despesas processuais para uso dos agentes"
+                              action="#{tipoDeCustaProcessualMBean.formulario()}"
+                              icon="ui-icon-flag"
+                              disabled="false"
+                              rendered="false"
+                              style="color:blue"/>
+                  <p:menuitem id="pesqJurisprudencia"
+                              value="Jurisprudência"
+                              action="#{jurisprudenciaMBean.listar()}"
+                              icon="ui-icon-script"
+                              disabled="false"
+                              rendered="false"/>
+                  <p:menuitem id="cadFuncionarioAgente"
+                              value="Acesso de funcionários. (Adv.Externo)"
+                              rendered="false"
+                              title="Manutenção de acesso de funcionário dos agentes de cobrança aos dados dos processos"
+                              icon="ui-icon-person"
+                              disabled="true" />
+                  <p:menuitem id="usrConfig"
+                              value="Configuração"
+                              rendered="false"
+                              title="Configuração de acesso/avisos do sistema"
+                              icon="ui-icon-gear"
+                              disabled="true" />
+	        </p:menu>
+			</h:form>
+	   </ui:define>
+      <ui:define name="alerta">
+         <h:form id="frmMensagem">
+         	<h:outputLabel value="Agente de cobrança selecionado: #{loginMBean.agenteUsuario.agente.nome}" style="font-size:14px;color:blue;font-weight: bold;"/>
+         </h:form>
+		</ui:define>
+	</ui:composition>
+</html>
