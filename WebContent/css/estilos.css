@@ -16,7 +16,7 @@ body{
 .container {
     width: 100vw;
     height: 100vh;
-    background: #6C7A89;
+    background: #f6f6f6;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -24,7 +24,7 @@ body{
 }
 
 .form-box{
-    border-radius: 5px;
+    border-radius: 5px solid black;
     width: 300px;
     background: #fff;
     text-align: center;

@@ -6,6 +6,11 @@
 	color: #fff;
 }
 
+.toggle-menu > i:hover {
+	color: black;
+	opacity: 0.3;
+}
+
 /* menu */
 .menu{
 	font-size: 1.1em;
@@ -31,18 +36,22 @@
 }
 
 .menu > ul a:hover, .menu > ul a:focus{
-	background-color: #dfdfdf;
-}
-
-.menu > ul .is-selected{
-	border-left: 3px solid #1e94d2; /* desloca 3 pixels da posição original */
+	margin-left: -3px; 
+	
+	border-left: 3px solid #5CB85C;
 	background-color: #f3f3f3;
+	color: #00863a;
 }
 
-.menu > ul .is-selected a{
-	margin-left: -3px; /* volta 3 pixels pra posição correta*/
-	color: #1e94d2;
-}
+/* .menu > ul .is-selected{*/
+/*	border-left: 3px solid #5CB85C; /* desloca 3 pixels da posição original */
+/*	background-color: #f3f3f3; */
+/*} */
+
+/*.menu > ul .is-selected a{*/
+/*	margin-left: -3px; /* volta 3 pixels pra posição correta*/
+/*	color: #5CB85C;*/
+/*} */
 
 
 /*Titulo da pagina */
