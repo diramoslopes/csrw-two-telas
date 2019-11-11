@@ -31,15 +31,15 @@
 						
 						<h1>Login</h1>	
 						
+						<p:growl id="msgLogin" autoUpdate="true"/>
+						
 						<h:inputText styleClass="form-input" id="login" required="true" requiredMessage="Usuário é obrigatório.">
 							<f:passThroughAttribute name="placeholder" value="Seu login de usuário"/>
 						</h:inputText>
-						<h:message for="login" style="color: red"/>
 						
 						<h:inputSecret styleClass="form-input" id="senha" required="true" requiredMessage="Senha é obrigatória.">
 							<f:passThroughAttribute name="placeholder" value="Digite sua senha" />
 						</h:inputSecret>
-						<h:message for="senha" style="color: red"/>
 						
 						<h:commandButton name="entrar" value="Entrar" title="Entrar"
 							type="submit" styleClass="form-btn" 
