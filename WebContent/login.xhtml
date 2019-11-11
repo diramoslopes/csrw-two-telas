@@ -13,7 +13,7 @@
 		<link rel="StyleSheet" type="text/css" href="css/estilos.css"
 			  media="screen" />
 		
-		<title>Login</title>
+		<title>CSRW - Contribuição Sindical Rural</title>
 		
 	</h:head>
 	
@@ -23,22 +23,25 @@
 			
 			<div class="container">
 				<div class="form-box">
-					<h:form id="frmLoginMain" method="post">
+					<h:form id="frmLogin" method="post">
 						
 						<h:graphicImage styleClass="logo" value="#{resource['images:logo_faesp.PNG']}" />
 						
 						<h1>Login</h1>	
 						
-						<h:inputText styleClass="form-input">
+						<h:inputText styleClass="form-input" id="login" required="true" requiredMessage="Usuário é obrigatório.">
 							<f:passThroughAttribute name="placeholder" value="Seu login de usuário"/>
 						</h:inputText>
+						<h:message for="login" style="color: red"/>
 						
-						<h:inputSecret styleClass="form-input">
+						<h:inputSecret styleClass="form-input" id="senha" required="true" requiredMessage="Senha é obrigatória.">
 							<f:passThroughAttribute name="placeholder" value="Digite sua senha" />
 						</h:inputSecret>
+						<h:message for="senha" style="color: red"/>
 						
 						<h:commandButton name="entrar" value="Entrar" title="Entrar"
-							type="submit" styleClass="form-btn" />
+							type="submit" styleClass="form-btn" 
+							action="#" />
 						
 					</h:form>
 				</div>
