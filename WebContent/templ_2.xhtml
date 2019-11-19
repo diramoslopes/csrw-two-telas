@@ -5,39 +5,54 @@
 	  xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 	<h:head>
+	
 		<f:facet name="first">
 			<meta charset="UTF-8" />
 			<meta name="viewport" content="width=device-width, initial-scale=1" />
 		</f:facet>
 	
-		<title>Template 2</title>
+		<title>
+			<ui:insert name="tituloJanela"/>
+		</title>
 		
-		<h:outputStylesheet library="style" name="layout2.css" />
+		<link rel="StyleSheet" type="text/css" href="css/estilos_template2.css"
+			  media="screen" />
 		
 		<h:outputScript target="body" library="primefaces" name="jquery/jquery.js"/>
-		<h:outputScript target="body" library="javascript" name="app2.js"/>
+		<h:outputScript target="body" library="javascript" name="app.js"/>
+	
 	</h:head>
-	
+
 	<h:body>
-		
-		<header class="cabecalho">
-			
-			<h1 class="logo">
-				<a href="#">teste img</a>		
-			</h1>
-			
-			<nav class="menu-principal">
-				<ul>
-					<li>link 1</li>
-					<li>link 2</li>
-					<li>link 3</li>
-					<li>link 4</li>
-					<li>link 5</li>
-				</ul>
-			</nav>
-			
-		</header>
-		
+			<header >	
+					<h:selectBooleanCheckbox id="bt_menu" />
+					<h:outputLabel value="&#9776;" for="bt_menu" />		
+				
+				<nav class="menu">
+					<ul>
+						<li><a href="http://localhost:8080/csrw-two/login.xhtml">Login</a></li>
+		            	<li><a href="#">Interno</a>
+							<ul>
+								<li><a href="https://webmail.faespsenar.com.br">Webmail</a></li>
+		                    	<li><a href="https://intranet.faespsenar.com.br">Intranet</a></li>
+							</ul>
+						</li>
+						<li><a href="#">Sistemas</a>
+				            <ul>
+			                    <li><a href="https://sistemas.faespsenar.com.br/csrw">CSRW</a></li>
+			                    <li><a href="https://sistemas.faespsenar.com.br/sistemaeconomico">Economico</a></li>
+			                    <li><a href="https://sistemas.faespsenar.com.br/sicp">SICP</a></li>
+				            </ul>
+		                </li>
+		                <li><a href="https://faespsenar.com.br">Portal</a></li>
+					</ul>
+				</nav>
+				
+			</header>
+				
+			<section class="content js-content">
+				<ui:insert name="conteudo" />
+			</section>
 	</h:body>
-	
+
 </html>
