@@ -1,8 +1,8 @@
 /* toggle menu (alternancia) */
 .toggle-menu{
-	float: left;
+	float: right;
 	line-height: 50px;
-	margin-left: 15px;
+	margin-right: 15px;
 	color: #fff;
 }
 

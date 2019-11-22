@@ -18,6 +18,7 @@
 		<h:outputStylesheet library="style" name="custom.css" />
 		<h:outputStylesheet library="style" name="layout.css" />
 		<h:outputStylesheet library="style" name="components.css" />
+		<h:outputStylesheet library="style" name="style.css" />
 		
 		<h:outputScript target="body" library="primefaces" name="jquery/jquery.js"/>
 		<h:outputScript target="body" library="javascript" name="app.js"/>
@@ -57,6 +58,10 @@
 		<section class="content js-content">
 			<ui:insert name="conteudo" />
 		</section>
+		
+		<footer class="rodape js-rodape">
+			<h:outputText value="csrw-two 2020" /> 
+		</footer>
 		
 	</h:body>
 

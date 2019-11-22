@@ -10,6 +10,20 @@
 	<ui:define name="conteudo">
 	
 		<h1 class="tituloDaPagina">Ocorreu um erro</h1>
+		
+		<h:form id="frmErro">
+			<p:panel>
+				<f:facet name="header">
+					Atenção
+				</f:facet>
+				
+				<h:panelGrid>
+					<h:outputText value="Ocorreu um erro no sistema, a equipe já foi informada." />
+					<h:outputText value="Por favor, tente novamente mais tarde." />
+				</h:panelGrid>
+				
+			</p:panel>
+		</h:form>
 	
 	</ui:define>
 	
