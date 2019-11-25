@@ -8,26 +8,18 @@
 	<ui:define name="tituloJanela">CSRW - Erro Timeout</ui:define>
 	
 	<ui:define name="conteudo">
-		<h1 class="tituloDaPagina"> Erro tempo esgotado. </h1>
 		
-	<h:form id="frmTimeOut">
-		<p:panel>
-			<f:facet name="header" >
-				Atenção
-			</f:facet>
-			
-			<h:panelGrid>
-				<h:outputText value="A sessão foi encerrada." />
-				<h:outputText value="Seu tempo inativo excedeu 30 minutos." />
-				<h:outputText value="Para continuar utilizando faça o login novamente." />
-			</h:panelGrid>
-			
-			<f:facet name="footer">
-				<p:commandButton action="login" value="Ir para a página de Login" />
-			</f:facet>
+		<div class="timeout">
 		
-		</p:panel>	
-	</h:form>	
+			<h1 class="tituloDaPagina">Erro - Tempo esgotado</h1>
+			
+			<h3>A sessão foi encerrada</h3>		
+			
+			<p>Seu tempo inativo excedeu 30 minutos.<br/>Para continuar utilizando faça o login novamente.</p>
+			
+			<p:commandButton value="Ir para Login"/>
+			
+		</div>
 		
 	</ui:define>
 	
