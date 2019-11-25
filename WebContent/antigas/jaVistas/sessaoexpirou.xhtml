@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+   <h:head>
+      <title>C.S.R.W. - Contribuição Sindical Rural - ATENÇÃO</title>
+      <link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
+   
+   	<meta http-equiv="Accept-Encoding"  content="gzip, deflate" />
+		<meta http-equiv="Content-Language" content="pt-br" />
+   
+      <h:outputScript name="jquery-1.7.2.min.js" library="js" target="head"/>
+      <h:outputScript name="jquery.maskMoney.js" library="js" target="head"/>
+      <h:outputScript name="utilitarios.js"      library="js" target="head"/>
+   </h:head>
+	<h:body style="background-image: url(/Restritas/Temas/imgs/bg_2012_12.jpg);"> 
+      <f:view contentType="text/html; charset=ISO-8859-1">
+      <p:layout fullPage="true"  >
+         <p:layoutUnit id="loutCabecalho" position="north" size="110" resizable="false" closable="false" collapsible="false" style="opacity:0.7" >  
+            <div id="idCabecalho">
+               <div id="idLogoFAESP" style="position:absolute; top:0; left:0;">
+                  <h:graphicImage value="/Restritas/Temas/imgs/logoFAESP_100x100.jpg" id="idImgLogoFAESP" />
+               </div>
+               <div id="idTituloFAESP" style="position:absolute; top:10px; left:0px; width:auto; margin-left: 110px; color:green; text-align:center;">
+                  <h:panelGrid>
+                     <h:outputLabel value="FEDERAÇÃO DA AGRICULTURA E PECUÁRIA DO ESTADO DE SÃO PAULO" style="font-size:26px;" />
+                     <h:outputLabel value="Contribuição Sindical Rural" style="font-size:14px;  font-weight:bold" />
+                     <h:outputLabel value="(Atenção)" style="font-size:12px;  font-weight:bold" />
+                  </h:panelGrid>
+               </div>
+               <div id="idLoginData" style="position:absolute; top:85px; right:0; color: blue; margin-rigth: 10px">
+                 <div id="idNomeUsuario" style="top:0; left:0; width:auto; font-size:14px; text-align: center; font-weight:bold;">
+                    <h:outputLabel value="Sessão expirada" title="Sessão expirou" />     
+                 </div>  
+               </div>
+            </div>
+         </p:layoutUnit>
+         <p:layoutUnit id="loutCentro" position="center" style="opacity:0.9">
+            <h:form id="frmErrorMain">
+					<p:panel id="pnlErro" style="position: absolute; top: 35%; left: 43%;width: 250px; height: auto; font-size:14px;">
+		            <f:facet name="header" >  
+		               SESSÃO EXPIROU!  
+		            </f:facet>           
+						<p:growl id="msgErro" autoUpdate="true"/> 
+						<h:panelGrid id="dsplLogin" cellpadding="6" style="font-family:Verdana ; text-align: center;">
+			  		      <h:outputText value="Sua sessão expirou" style="font-size:14px;"/>
+			  		      <h:outputText value="Por favor, faça login novamente." style="font-size:12px;"/>
+						</h:panelGrid> 
+					</p:panel>
+			   </h:form>
+         </p:layoutUnit>   
+		</p:layout>	
+	   </f:view>
+	</h:body> 
+</html>

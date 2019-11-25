@@ -1,0 +1,294 @@
+<?xml version='1.0' encoding='LATIN1' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:composition template="Temas/templ_geral.xhtml">
+	
+		<ui:define name="ident_modulo">
+      	<h:outputLabel value="(Escritório: #{loginMBean.agenteUsuarioLogin.grupoDeTrabalho.nomeDoGrupo})" style="font-size:12px;  font-weight:bold" />
+		</ui:define>
+		<ui:define name="acesso_externo">
+			<h:outputLabel value="Usuário: #{loginMBean.agenteUsuarioLogin.nome} " title="#{loginMBean.nomeDoEscritorio}" />
+			<p:commandLink value="Sair" action="#{loginMBean.logoutUsuario()}" style="color: red;"/>
+		</ui:define>
+		
+ 		<ui:define name="areadetrabalho">
+	      <h:form id="frmJurisprudencia" >
+   		   <p:growl id="msgJurisprudencia" autoUpdate="true"/>
+   			<p:panel id="jurisprudenciaPanel" header="Jurisprudência" style="font-size:14px;font-family:Verdana" toggleable="true">
+               <p:panelGrid id="jurisprudenciaGrid" columns="3" >
+	   	   		<h:outputLabel value="Juiz ou Desembargador:* " />
+		      		<p:inputText id="nomeDoJuizOuDesembargadorId"
+		      						 value="#{jurisprudenciaMBean.jurisprudencia.nomeDoJuizOuDesembargador}"
+		      						 required="true"
+		      						 requiredMessage="É necessário informar o nome do juiz ou desembargador" size="40"/>
+		      		<h:outputLabel value="" />
+
+                  <h:outputText value="Tribunal:*" />
+                  <p:selectOneMenu id="selTribunal"
+                                   value="#{jurisprudenciaMBean.jurisprudencia.tribunal.id}"
+                                   required="true"
+                                   requiredMessage="É necessário selecionar um tribunal"
+                                   style="width:300px"
+                                   panelStyle="width:300px;font-size:12px;font-family:Verdana">
+                     <f:selectItem itemLabel="" itemValue="" />
+                     <f:selectItems value="#{selectOneMenuMBean.listaTribunais}"/>
+                  </p:selectOneMenu>
+		      		<h:outputLabel value="" />
+
+                  <h:outputText value="Data do julgamento: " />
+                  <p:calendar id="dataDoJulgamentoId"
+                              value="#{jurisprudenciaMBean.jurisprudencia.dataDoJulgamento}"
+                              showOn="button"
+                              required="false"
+                              pattern="dd/MM/yyyy"/>
+		      		<h:outputLabel value="" />
+
+                  <h:outputText value="Data da publicação: " />
+                  <p:calendar id="dataDaPublicacaoId"
+                              value="#{jurisprudenciaMBean.jurisprudencia.dataDaPublicacao}"
+                              showOn="button"
+                              required="false"
+                              pattern="dd/MM/yyyy"/>
+		      		<h:outputLabel value="" />
+
+                  <h:outputText value="Tipo de decisão:* " />
+                  <p:selectOneMenu id="tipodedecisaoId" value="#{jurisprudenciaMBean.jurisprudencia.tipoDeDecisao}" required="true" requiredMessage="É necessário selecionar o tipo de decisão" >
+			            <f:selectItem itemLabel="" itemValue="" />
+			            <f:selectItems value="#{selectOneMenuMBean.getListaTipoDeDecisao()}"/>
+                  </p:selectOneMenu>
+		      		<h:outputLabel value="" />
+
+                  <h:outputText value="Assunto(s):* " />
+                  <p:selectCheckboxMenu id="assuntosId" value="#{jurisprudenciaMBean.jurisprudencia.assuntos}" label="Selecione..." filter="true" filterMatchMode="startsWith" style="width:205px" panelStyle="width:500px" showCheckbox="true">
+                     <f:selectItems value="#{selectOneMenuMBean.listaJurisprudenciaAssunto}" />
+                  </p:selectCheckboxMenu>
+                  <p:commandButton id="cadastroAssuntoBtn" value="Novo Assunto" update=":formAssuntos" actionListener="#{jurisprudenciaAssuntoMBean.listar}" immediate="true" oncomplete="assuntosDialog.show()" title="Cadastro de assuntos" style="font-size:10px" />
+
+                  <h:outputText value="Texto:* " />
+                  <p:inputTextarea id="textoId" value="#{jurisprudenciaMBean.jurisprudencia.texto}" required="true" requiredMessage="É necessário informar um texto" style="width:600px;height:100px;" cols="450"/>
+		      		<h:outputLabel value="" />
+
+               </p:panelGrid>
+
+               <p:spacer height="5"/>
+               <p:toolbar style="font-size:12px;font-family:Verdana">
+               	<p:toolbarGroup align="left">
+                     <p:commandButton id="cmbGravarJurisprudencia"
+                                      icon="ui-icon-disk"
+                                      actionListener="#{jurisprudenciaMBean.gravar}"
+                                      update=":frmJurisprudencia:jurisprudenciaGrid,:frmListaJurisprudencia:jurisprudenciaTable"
+                                      ajax="false"
+                                      value="Gravar"
+                                      title="Gravar"
+                                      style="width:150px;"/>
+                  </p:toolbarGroup>
+               </p:toolbar>
+            </p:panel>
+         </h:form>
+         <p:spacer height="10"></p:spacer>
+         <p:panel id="jurisprudenciaPanel2" header="Lista de Jurisprudências" style="font-size:14px;font-family:Verdana" toggleable="true">
+            <h:form id="frmListaJurisprudencia">
+
+		         <p:dataTable id="jurisprudenciaTable" var="jurisprudencia" value="#{jurisprudenciaMBean.jurisprudenciaList}" paginator="true" paginatorPosition="bottom" rows="10" style="font-size:12px" tableStyle="width:auto">
+		     	      <p:column filterBy="#{jurisprudencia.nomeDoJuizOuDesembargador}" style="width:300px">
+		               <f:facet name="header">
+		                  <h:outputText value="Nome Do Juiz ou Desembargador" />
+		               </f:facet>
+		               <h:outputText value="#{jurisprudencia.nomeDoJuizOuDesembargador}" />
+		     	      </p:column>
+		     	      <p:column filterBy="#{jurisprudencia.tribunal.nomeDoTribunal}" style="width:300px">
+		               <f:facet name="header">
+		                  <h:outputText value="Tribunal" />
+		               </f:facet>
+		               <h:outputText value="#{jurisprudencia.tribunal.nomeDoTribunal}" />
+		     	      </p:column>
+
+		     	      <p:column filterBy="#{jurisprudencia.dataDoJulgamentoFormatada}" style="width:100px">
+		               <f:facet name="header">
+		                  <h:outputText value="Data do Julgamento" />
+		               </f:facet>
+		               <h:outputText value="#{jurisprudencia.dataDoJulgamento}" >
+		                  <f:convertDateTime pattern="dd/MM/yyyy" type="date" dateStyle="short" />
+		               </h:outputText>
+		    	      </p:column>
+
+                  <p:column filterBy="#{jurisprudencia.dataDaPublicacaoFormatada}" style="width:100px">
+		               <f:facet name="header">
+		                  <h:outputText value="Data da publicação" />
+		               </f:facet>
+		               <h:outputText value="#{jurisprudencia.dataDaPublicacao}" >
+		                  <f:convertDateTime pattern="dd/MM/yyyy" type="date" dateStyle="short" />
+		               </h:outputText>
+		    	      </p:column>
+
+		    	      <p:column filterBy="#{jurisprudencia.tipoDeDecisao.label}" style="width:100px">
+  			            <f:facet name="header">
+  			               <h:outputText value="Tipo de Decisao" />
+   		            </f:facet>
+   		            <h:outputText value="#{jurisprudencia.tipoDeDecisao.label}" />
+		            </p:column>
+
+		    	      <p:column filterBy="#{jurisprudencia.texto}" filterMatchMode="contains" style="width:auto">
+		               <f:facet name="header">
+		                  <h:outputText value="Texto" />
+		               </f:facet>
+		               <h:outputText value="#{jurisprudencia.exemploTexto}" />
+		    	      </p:column>
+		    	      <p:column headerText="Detalhes" >
+			        	   <f:facet name="header">
+			           		<h:outputText value="Opções" />
+			            </f:facet>
+		               <p:commandButton id="selectButtonId" update=":formDetalhes:jurisprudenciaGrid2" oncomplete="jurisprudenciaDialog.show()" icon="ui-icon-search" title="Detalhes/Editar" style="width:25px">
+		                   <f:setPropertyActionListener value="#{jurisprudencia}" target="#{jurisprudenciaMBean.jurisprudencia}" />
+		               </p:commandButton>
+		            </p:column>
+		     	      <f:facet name="footer">
+		  		         Total de #{fn:length(jurisprudenciaMBean.jurisprudenciaList)} registro(s).
+		  		      </f:facet>
+		  	      </p:dataTable>
+
+	  	      </h:form>
+         </p:panel>
+
+         <p:dialog header="Assuntos" id="assuntosDlgId" widgetVar="assuntosDialog" resizable="false" showEffect="fade" modal="false" width="700" height="420" style="font-size:16px" position="center">
+				<h:form id="formAssuntos">
+					<p:panel id="assuntosPanel" style="font-size:14px;font-family:Verdana">
+					   <p:growl id="msgAssuntos" autoUpdate="true"/>
+						<p:panelGrid id="assuntosGrid" columns="1">
+					   	<h:outputText value="Assunto:* " />
+                     <p:inputTextarea id="assuntoId" value="#{jurisprudenciaAssuntoMBean.jurisprudenciaAssunto.texto}" style="width:600px;height:50px;" required="true" requiredMessage="É necessário informar o assunto!"/>
+					   </p:panelGrid>
+	               <p:spacer height="5"/>
+	               <p:toolbar style="font-size:12px;font-family:Verdana">
+	               	<p:toolbarGroup align="left">
+                        <p:commandButton id="cmbGravarJurisprudenciaAssunto"
+   					                       icon="ui-icon-disk"
+						                       action="#{jurisprudenciaAssuntoMBean.gravar}"
+						                       update=":formAssuntos,:frmJurisprudencia:assuntosId"
+						                       ajax="true"
+						                       value="Gravar"
+						                       title="Gravar"
+						                       style="width:100px;"/>
+	                  </p:toolbarGroup>
+	               </p:toolbar>
+	              </p:panel>
+	              <p:panel id="listaAssuntosPanel" style="font-size:14px;font-family:Verdana">
+                  <p:dataTable id="assuntoTable" var="jurisprudenciaAssunto" value="#{jurisprudenciaAssuntoMBean.jurisprudenciaAssuntoList}" editable="true" paginator="true" paginatorPosition="bottom" rows="5" style="font-size:12px" tableStyle="width:auto">
+
+			     	      <p:ajax event="rowEdit" listener="#{jurisprudenciaAssuntoMBean.onRowEdit}" update=":formAssuntos:msgAssuntos" />
+
+			     	      <p:column filterBy="#{jurisprudenciaAssunto.texto}" filterMatchMode="contains" style="width:600px">
+			     	         <p:cellEditor>
+			                  <f:facet name="output"><h:outputText value="#{jurisprudenciaAssunto.texto}" /></f:facet>
+			                  <f:facet name="input"><h:inputText value="#{jurisprudenciaAssunto.texto}" /></f:facet>
+			               </p:cellEditor>
+			     	      </p:column>
+			    	      <p:column>
+				        	   <f:facet name="header">
+				           		<h:outputText value="Opções" />
+				            </f:facet>
+                        <p:rowEditor />
+                        <p:commandButton id="deleteButtonId" onclick="confirmaExclusao.show()" icon="ui-icon-trash" title="Excluir" style="width:20px; height:20px" immediate="true">
+		                     <f:setPropertyActionListener value="#{jurisprudenciaAssunto}" target="#{jurisprudenciaAssuntoMBean.jurisprudenciaAssunto}" />
+		                  </p:commandButton>
+			            </p:column>
+			     	      <f:facet name="footer">
+			  		         Total de #{fn:length(jurisprudenciaAssuntoMBean.jurisprudenciaAssuntoList)} registro(s).
+			  		      </f:facet>
+			  	      </p:dataTable>
+					</p:panel>
+
+					<p:dialog id="confirmaExclusao" resizable="false" header="Atenção" severity="alert" widgetVar="confirmaExclusao" modal="false" style="font-size:14px;font-family:Verdana">
+               	<h:outputText value="Voce deseja realmente excluir?" />
+  		  		  		<f:facet name="footer">
+                     <p:commandButton id="btnSim" value="Sim" oncomplete="confirmaExclusao.hide()" actionListener="#{jurisprudenciaAssuntoMBean.remover}" update=":formAssuntos,:frmJurisprudencia:assuntosId" immediate="true"/>
+                     <p:commandButton id="btnNao" value="Não" onclick="confirmaExclusao.hide()" />
+                  </f:facet>
+               </p:dialog>
+
+				</h:form>
+		   </p:dialog>
+
+			<p:dialog header="Detalhes Jurisprudência" widgetVar="jurisprudenciaDialog" resizable="false" id="jurisprudenciaDlgId" showEffect="fade" hideEffect="explode" modal="false" width="950" height="370" style="font-size:16px" position="center">
+				<h:form id="formDetalhes">
+					<p:panel id="jurisprudenciaPanel3" style="font-size:14px;font-family:Verdana">
+					   <p:growl id="msgJurisprudencia2" autoUpdate="true"/>
+						<p:panelGrid id="jurisprudenciaGrid2" columns="2">
+
+					   	<h:outputText value="Nome do juiz ou desembargador:* " />
+					      <p:inputText id="nomeDoJuizOuDesembargadorId2" value="#{jurisprudenciaMBean.jurisprudencia.nomeDoJuizOuDesembargador}" size="40" required="true" requiredMessage="É necessário informar o nome do juiz ou desembargador"/>
+
+	                  <h:outputText value="Data do julgamento: " />
+	                  <p:calendar id="dataDoJulgamentoId2" value="#{jurisprudenciaMBean.jurisprudencia.dataDoJulgamento}" showOn="button" pattern="dd/MM/yyyy" size="10" required="false" />
+
+	                  <h:outputText value="Data da publicação: " />
+	                  <p:calendar id="dataDaPublicacaoId2" value="#{jurisprudenciaMBean.jurisprudencia.dataDaPublicacao}" showOn="button" pattern="dd/MM/yyyy" size="10" required="false" />
+
+	                  <h:outputText value="Tipo de decisão:* " />
+	                  <p:selectOneMenu id="tipodedecisaoId2" value="#{jurisprudenciaMBean.jurisprudencia.tipoDeDecisao}" required="true" requiredMessage="É necessário selecionar o tipo de decisão">
+				            <f:selectItem itemLabel="" itemValue="" />
+				            <f:selectItems value="#{selectOneMenuMBean.getListaTipoDeDecisao()}"/>
+	                  </p:selectOneMenu>
+
+	                  <h:outputText value="Texto:* " />
+	                  <p:inputTextarea id="textoId2" value="#{jurisprudenciaMBean.jurisprudencia.texto}" style="width:600px;height:100px;" cols="450" required="true" requiredMessage="É necessário informar um texto"/>
+					   </p:panelGrid>
+	               <p:spacer height="5"/>
+	               <p:toolbar style="font-size:12px;font-family:Verdana">
+	               	<p:toolbarGroup align="left">
+	                     <p:commandButton id="cmbEditarJurisprudencia"
+						                       icon="ui-icon-disk"
+						                       actionListener="#{jurisprudenciaMBean.gravar}"
+						                       oncomplete="handleEditaJurisprudencia(xhr, status, args)"
+						                       update=":formDetalhes:jurisprudenciaGrid2,:frmListaJurisprudencia:jurisprudenciaTable"
+						                       ajax="false"
+						                       value="Gravar"
+						                       title="Gravar"
+						                       style="width:150px;"/>
+	                     <p:commandButton id="cmdCancelarjurisprudencia"
+	                     					  icon="ui-icon-circle-triangle-w"
+	                     					  value="Cancelar"
+	                     					  onclick="jurisprudenciaDialog.hide()"
+	                     					  immediate="true"
+	                     					  title="Cancelar"
+	                     					  style="width:150px;"/>
+	                  </p:toolbarGroup>
+	               </p:toolbar>
+					</p:panel>
+				</h:form>
+			</p:dialog>
+
+		</ui:define>
+		<ui:define name="menu">
+			<h:form id="frmMenu" style="font-family:Verdana; font-size:12px">
+			   <p:toolbar id="idNavegador">
+	            <p:toolbarGroup id="tlbrGrpNavegador">
+	               <p:commandButton id="btnHome"
+	                                icon="ui-icon-home"
+	                                value="Home"
+	                                action="#{jurisprudenciaMBean.formularioHome()}"
+	                                title="Volta a página inicial"
+	                                style="width:auto;"/>
+	               <p:commandButton id="btnPaginaAnterior"
+	                                icon="ui-icon-arrowreturnthick-1-w"
+	                                value="Anterior"
+	                                action="#{jurisprudenciaMBean.voltarParaPaginaOrigem()}"
+	                                title="Volta a página anterior"
+	                                style="width:auto;"/>
+	            </p:toolbarGroup>
+	         </p:toolbar>
+			</h:form>
+		</ui:define>
+      <ui:define name="alerta">
+         <h:form id="frmMensagem">
+         	<h:outputLabel value=" " style="font-size:14px;color:blue;font-weight: bold;"/>
+         </h:form>
+		</ui:define>
+	</ui:composition>
+</html>

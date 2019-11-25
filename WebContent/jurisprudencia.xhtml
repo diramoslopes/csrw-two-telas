@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	template="/WEB-INF/templates/templ_1.xhtml">
+
+<ui:define name="tituloJanela">CSRW - Jurísprudencia</ui:define>
+	
+	<ui:define name="conteudo">
+		
+	<h:form id="frmJurisprudencia">
+	
+		<div class="ui-fluid">
+			
+			<p:panel header="Jurisprudencia">
+			<p:panelGrid id="jurisprudenciaGrid" columns="3" layout="grid"
+						 columnClasses="ui-grid-col-5, ui-grid-col-5, ui-grid-col-2"
+						 styleClass="panelgrid-noborder">
+				<p:outputLabel value="Juiz ou Desembargador: " for="nomeDoJuizOuDesembargadorId"/>
+				<p:inputText id="nomeDoJuizOuDesembargadorId" required="true" requiredMessage="É necessário informar o nome do juiz ou desembargador" maxlength="40" />
+				<p:outputLabel/>
+				
+				<p:outputLabel value="Tribunal" for="selTribunal"/>
+				<p:selectOneMenu id="selTribunal" required="true" requiredMessage="É necessário selecionar um tribunal">
+						<f:selectItem itemLabel="Selecione" />
+						<f:selectItem itemLabel="Tribunal I" itemValue="TRIBUNAL I"/>
+						<f:selectItem itemLabel="Tribunal VI" itemValue="TRIBUNAL VI" />
+				</p:selectOneMenu>
+				<p:outputLabel/>
+				
+				<p:outputLabel value="Data do julgamento" for="dataDoJulgamentoId"/>
+				<p:calendar id="dataDoJulgamentoId" showOn="button" required="false" pattern="dd/MM/yyyy"/>
+				<p:outputLabel/>
+				
+				<p:outputLabel value="Data do publicação" for="dataPublicacaoId"/>
+				<p:calendar id="dataPublicacaoId" showOn="button" required="false" pattern="dd/MM/yyyy"/>
+				<p:outputLabel/>
+				
+				<p:outputLabel value="Tipo de decisão " for="tipoDeDecisaoId"/>
+				<p:selectOneMenu id="tipoDeDecisaoId" required="true" requiredMessage="É necessário selecionar o tipo de decisão">
+						<f:selectItem itemLabel="Selecione" />
+						<f:selectItem itemLabel="Sentença" itemValue="S"/>
+						<f:selectItem itemLabel="Acórdão" itemValue="A" />
+						<f:selectItem itemLabel="Súmula" itemValue="SÚ"/>
+						<f:selectItem itemLabel="Orientação Jurísprudencial" itemValue="OJ" />
+				</p:selectOneMenu>
+				<p:outputLabel/>
+				
+				<p:outputLabel value="Assunto(s)"/>
+				<p:selectCheckboxMenu id="assuntosId" label="Selecione">
+						<f:selectItem itemLabel="Assunto I" />
+						<f:selectItem itemLabel="Assunto II" itemValue="S"/>
+				</p:selectCheckboxMenu>
+				<p:commandButton id="cadastroAssuntoBtn" value="Novo Assunto" title="Cadastro de assuntos"/>
+				
+				<p:outputLabel value="Texto " for="textoId"/>
+				<p:inputTextarea id="textoId" required="true" requiredMessage="É necessário informar um texto" cols="45"/>
+				<p:outputLabel/>
+				
+				</p:panelGrid>
+				
+				<p:toolbar align="center">
+					<p:toolbarGroup>
+						<p:commandButton id="btnGravarJurisprudencia" icon="fa fa-fw fa-save" title="Gravar" value="Gravar"/>
+					</p:toolbarGroup>
+				</p:toolbar>
+				
+			</p:panel>
+		</div>
+	</h:form>
+	
+	
+</ui:define>
+	
+</ui:composition>

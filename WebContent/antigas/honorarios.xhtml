@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:composition template="Temas/templ_geral.xhtml">
+		<ui:define name="ident_modulo">
+	   	<h:outputLabel value="(Depto: Financeiro - acesso interno)" style="font-size:12px;  font-weight:bold" />
+		</ui:define>
+		<ui:define name="acesso_interno">
+			<h:outputLabel value="Usuário: #{loginMBean.agenteUsuarioLogin.nome} " title="#{loginMBean.nomeDoEscritorio}" />
+			<p:commandLink value="Sair" action="#{loginMBean.logoutUsuario()}" style="color: red;"/>
+		</ui:define>
+ 		<ui:define name="areadetrabalho">
+         <p:ajaxStatus onstart="porFavorAguardeDialog.show()" oncomplete="porFavorAguardeDialog.hide()"/>
+			<p:messages id="errMessages" showDetail="true" autoUpdate="true" closable="true" style="font-size:12px;font-family:Verdana"/> 
+         <h:form id="frmHonorarios" style="font-size:10px; font-family:Verdana">
+            <p:panel id="selPeriodoHonorarios"
+                     header="Boletos quitados no período solicitado (Honorários não pagos)"
+                     toggleable="false"
+                     style="font-size:12px"
+                     visible="true">
+						<h:panelGrid columns="7">
+							<h:outputText value="Selecione o agente: "/>
+							<p:selectOneMenu id="selOneMnAgente"
+							                 value="#{honorariosMBean.agente.id}"
+							                 style="width:350px"
+							                 panelStyle="width:350px;font-size:10px;font-family:Verdana">
+							   <f:selectItems value="#{selectOneMenuMBean.listaAgentes}" />
+							</p:selectOneMenu>
+							<h:outputText value="Data inicial: "/>
+							<p:calendar id="dtInicialPesquisa"
+							            value="#{honorariosMBean.dataInicialDoPeriodo}"
+							            readonlyInput ="true"
+							            navigator="true"
+							            showOn="button"
+							            mindate="01/01/1998"
+							            pattern="dd/MM/yyyy"
+							            required="false"
+							            requiredMessage="É necessário informar a data inicial">
+							</p:calendar>
+							<h:outputText value="Data final: "/>
+							<p:calendar id="dtFinalPesquisa"
+							            value="#{honorariosMBean.dataFinalDoPeriodo}"
+							            readonlyInput ="true"
+							            navigator="true"
+							            showOn="button"
+							            mindate="01/01/1998"
+							            pattern="dd/MM/yyyy"
+							            required="false"
+							            requiredMessage="É necessário informar a data final">
+							</p:calendar>
+	  				      <p:commandButton icon="ui-icon-gear"
+	  				                       update=":frmHonorarios"
+	  				                       value="Pesquisar"
+	  				                       title="Apresenta boletos pagos no período cujos honorário não foram pagos ao agente selecionado"
+	  				                       style="width:100px"/>
+						</h:panelGrid>
+            </p:panel>      
+            <p:spacer height="5"/>      
+            <p:panel id="listaBoletosParaHonorarios"
+                     toggleable="true"
+                     style="font-size:12px"
+                     visible="#{honorariosMBean.temBoletosParaHonorarios}">
+               <p:dataTable id="tblBoletosPagosDisp" 
+               				 var="honorarioBoletoPago" 
+               				 value="#{honorariosMBean.honorariosBoletosPagos}"
+                            tableStyle="width:auto" 
+                            style="font-size:11px"
+                            emptyMessage="Não há boletos pagos para o agente no período informado.">
+                  <f:facet name="header">
+                  </f:facet>
+                  <p:column headerText="Contribuinte" 
+                            style="width:350px" 
+                            sortBy="#{honorarioBoletoPago.nomeDoContribuinte}"
+                            filterBy="#{honorarioBoletoPago.nomeDoContribuinte}">
+                        <h:outputText value="#{honorarioBoletoPago.nomeDoContribuinte}"
+                                      title="Nome ou razão social do contribuinte." />
+                  </p:column>
+
+                  <p:column headerText="Exercício" 
+                            style="width:80px" 
+                            sortBy="#{honorarioBoletoPago.exercicio}"
+                            filterBy="#{honorarioBoletoPago.exercicio}">
+                        <h:outputText value="#{honorarioBoletoPago.exercicio}"
+                                      title="Exercício do boleto." />
+                  </p:column>
+
+                  <p:column headerText="CPF / CNPJ" 
+                            style="width:100px" 
+                            sortBy="#{honorarioBoletoPago.numeroDoDocumentoFormatado}"
+                            filterBy="#{honorarioBoletoPago.numeroDoDocumentoFormatado}">
+                        <h:outputText value="#{honorarioBoletoPago.numeroDoDocumentoFormatado}"
+                                      title="CPF ou CNPJ do contribuinte." />
+                  </p:column>
+
+                  <p:column headerText="Cód. contribuinte" 
+                            style="width:100px" 
+                            sortBy="#{honorarioBoletoPago.codigoDoContribuinte}"
+                            filterBy="#{honorarioBoletoPago.codigoDoContribuinte}">
+                        <h:outputText value="#{honorarioBoletoPago.codigoDoContribuinte}"
+                                      title="Código do contribuinte" />
+                  </p:column>
+
+                  <p:column headerText="Pago em" 
+                            style="width:100px; text-align:center;" 
+                            sortBy="#{honorarioBoletoPago.dataDoPagamentoDoBoletoFormatada}"
+                            filterBy="#{honorarioBoletoPago.dataDoPagamentoDoBoletoFormatada}">
+							<h:outputText value="#{honorarioBoletoPago.dataDoPagamentoDoBoleto}" >
+							   <f:convertDateTime pattern="dd/MM/yyyy" type="date" dateStyle="short" />
+							</h:outputText>
+                  </p:column>
+
+                  <p:column headerText="Valor pago" style="width:100px;text-align:right"
+                            sortBy="#{honorarioBoletoPago.valorPagoDoBoleto}">
+                     <h:outputText value="#{honorarioBoletoPago.valorPagoDoBoleto}" >
+                        <f:convertNumber currencySymbol="R$" pattern="#,##0.00" type="currency"/>
+                     </h:outputText>
+                  </p:column>
+					</p:dataTable>
+				</p:panel>	
+         </h:form>
+
+         <p:dialog id="idPorFavorAguardeDialog"
+                   widgetVar="porFavorAguardeDialog"
+                   closable="false"
+                   header="Processando..."
+                   resizable="false"
+                   modal="false"
+                   showEffect="fade"
+                   hideEffect="fade"
+                   width="300" position="center"
+                   appendToBody="true"
+                   style="font-size:14px">
+            <p:panel id="pnlAguarde">
+               <p:spacer height="20"></p:spacer>
+               <h:outputText id="lblAguarde" value="Por favor aguarde..."/>
+               <p:spacer height="20"/>
+            </p:panel>
+         </p:dialog>
+
+		</ui:define>
+		<ui:define name="menu">
+         <h:form id="frmMenu" style="font-family:Verdana; font-size:12px">
+            <p:toolbar id="idNavegador">
+               <p:toolbarGroup id="tlbrGrpNavegador">
+                  <p:commandButton id="btnHome"
+                                   icon="ui-icon-home"
+                                   value="Home"
+                                   action="#{honorariosMBean.formularioHome()}"
+                                   title="Volta a página inicial"
+                                   style="width:auto;"/>
+                  <p:commandButton id="btnPaginaAnterior"
+                                   icon="ui-icon-arrowreturnthick-1-w"
+                                   value="Anterior"
+                                   action="#{honorariosMBean.voltarParaPaginaOrigem()}"
+                                   title="Volta a página anterior"
+                                   style="width:auto;"/>
+               </p:toolbarGroup>
+            </p:toolbar>
+         </h:form>
+		</ui:define>
+      <ui:define name="alerta">
+      	<p:messages id="msg" autoUpdate="true" for="frmHonorarios"/>
+		</ui:define>
+	</ui:composition>   
+</html>
