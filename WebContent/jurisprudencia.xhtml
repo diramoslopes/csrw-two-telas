@@ -55,7 +55,7 @@
 							<f:selectItem itemLabel="Assunto I" />
 							<f:selectItem itemLabel="Assunto II" itemValue="S"/>
 					</p:selectCheckboxMenu>
-					<p:commandButton id="cadastroAssuntoBtn" value="Novo Assunto" title="Cadastro de assuntos"/>
+					<p:commandButton id="cadastroAssuntoBtn" value="Novo Assunto" oncomplete="PF('assuntosDialog').show()" title="Cadastro de assuntos"/>
 					
 					<p:outputLabel value="Texto " for="textoId"/>
 					<p:inputTextarea id="textoId" required="true" requiredMessage="É necessário informar um texto" cols="45"/>
@@ -108,6 +108,43 @@
 				</p:dataTable>
 			</p:panel>
 		</h:form>
+		
+		<p:dialog header="Assuntos" id="assuntosDlgId" widgetVar="assuntosDialog" resizable="false" responsive="true">
+			<h:form id="formAssuntos">
+			
+				<h:panelGroup id="assuntosPanel" layout="block" >
+				
+					<p:panelGrid id="assuntosGrid" columns="2" layout="grid" >
+						<p:outputLabel value="Assunto" for="assuntoId"/>
+						<p:inputTextarea id="assuntoId" required="true" requiredMessage="É necessário informar o assunto!"/>
+					</p:panelGrid>
+					
+					<p:toolbar>
+						<p:toolbarGroup align="left">
+							<p:commandButton id="btnGravarJurisprudenciaAssunto"
+											 value="Gravar" title="Gravar"/>
+						</p:toolbarGroup>
+					</p:toolbar>
+					
+				</h:panelGroup>
+				
+				<h:panelGroup id="listaAssutoPanel">
+					<p:dataTable id="assuntoTable" editable="true" paginator="true" paginatorPosition="bottom" rows="5">
+						
+						<p:column headerText="Opções">
+							<p:commandButton id="btnDeleteId" title="Excluir" ></p:commandButton>
+						</p:column>
+						
+						<f:facet name="footer">
+							Total de registro(s).
+						</f:facet>
+						
+					</p:dataTable>
+				</h:panelGroup>
+				
+			</h:form>
+		
+		</p:dialog>
 	
 </ui:define>
 	
