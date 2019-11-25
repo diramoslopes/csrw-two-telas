@@ -66,7 +66,7 @@
 
 /* conteudo */
 .content{
-	height: auto;
+	height: 680px; /* height: auto; */
 	padding: 0 15px;
 	margin-top: 50px;
 	margin-bottom: 50px;
